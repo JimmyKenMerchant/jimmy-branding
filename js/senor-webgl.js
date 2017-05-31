@@ -124,9 +124,9 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 	 * textures, callUniforms, geometry_mode, geometry_first, geometry_count,
 	 * x, y, z, x_speed, y_speed, z_speed,
 	 * sx, sy, sz, sx_speed, sy_speed, sz_speed,
-	 * rangle, rx, ry, rz, rangle_speed, rx_speed, ry_speed, rz_speed,
+	 * angle, rx, ry, rz, angle_speed, rx_speed, ry_speed, rz_speed,
 	 * ks, kd, ka,
-	 * x_length, y_length, z_length, reserve
+	 * x_radius, y_radius, z_radius, reserve
 	 */
 	self.Object = function( parameter ) {
 		// If noting, initialize parameter
@@ -242,8 +242,8 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 
 		// Rotation (Actual Degrees or Quaternions)
 		// Angle use for Quaternions
-		if ( typeof parameter.rangle !== "number" || parameter.rangle === null ) {
-			parameter.rangle = 0;
+		if ( typeof parameter.angle !== "number" || parameter.angle === null ) {
+			parameter.angle = 0;
 		}
 		// Actual degrees or normalized vector as axis of rotation
 		if ( typeof parameter.rx !== "number" || parameter.rx === null ) {
@@ -257,8 +257,8 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		}
 
 		// Per milliseconds
-		if ( typeof parameter.rangle_speed !== "number" || parameter.rangle_speed === null ) {
-			parameter.rangle_speed = 0.0;
+		if ( typeof parameter.angle_speed !== "number" || parameter.angle_speed === null ) {
+			parameter.angle_speed = 0.0;
 		}
 		if ( typeof parameter.rx_speed !== "number" || parameter.rx_speed === null ) {
 			parameter.rx_speed = 0.0;
@@ -270,11 +270,11 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 			parameter.rz_speed = 0.0;
 		}
 
-		this.rangle = parameter.rangle;
+		this.angle = parameter.angle;
 		this.rx = parameter.rx;
 		this.ry = parameter.ry;
 		this.rz = parameter.rz;
-		this.rangle_speed = parameter.rangle_speed;
+		this.angle_speed = parameter.angle_speed;
 		this.rx_speed = parameter.rx_speed;
 		this.ry_speed = parameter.ry_speed;
 		this.rz_speed = parameter.rz_speed;
@@ -297,22 +297,22 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 
 
 		// Length and Multipurpose Parameters
-		if ( typeof parameter.x_length !== "number" || parameter.x_length === null ) {
-			parameter.x_length = 0.0;
+		if ( typeof parameter.x_radius !== "number" || parameter.x_radius === null ) {
+			parameter.x_radius = 0.0;
 		}
-		if ( typeof parameter.y_length !== "number" || parameter.y_length === null ) {
-			parameter.y_length = 0.0;
+		if ( typeof parameter.y_radius !== "number" || parameter.y_radius === null ) {
+			parameter.y_radius = 0.0;
 		}
-		if ( typeof parameter.z_length !== "number" || parameter.z_length === null ) {
-			parameter.z_length = 0.0;
+		if ( typeof parameter.z_radius !== "number" || parameter.z_radius === null ) {
+			parameter.z_radius = 0.0;
 		}
 		if ( typeof parameter.reserve !== "object" || parameter.reserve === null ) {
-			parameter.reserve = {};
+			parameter.reserve = [];
 		}
 
-		this.x_length = parameter.x_length;
-		this.y_length = parameter.y_length;
-		this.z_length = parameter.z_length;
+		this.x_radius = parameter.x_radius;
+		this.y_radius = parameter.y_radius;
+		this.z_radius = parameter.z_radius;
 		this.reserve = parameter.reserve;
 	};
 
@@ -363,7 +363,7 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		var pre_vao_index = this.vao.length;
 		this.vao[pre_vao_index] = [];
 		var num = this.vertices.length;
-		for ( var i = 0; i < parameter.vertices.length; i++ ) {
+		for ( var i = 0, a = parameter.vertices.length; i < a; i++ ) {
 			this.vertices[num + i] = parameter.vertices[i];
 			this.registerVertices( num + i );
 			// last one of buffers
@@ -415,32 +415,152 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 			shader_index = 0;
 		}
 		var target_vao = this.vao[this.vao_index];
-		for ( var i = 0; i < target_vao.length; i++ ) {
+		for ( var i = 0, a = target_vao.length; i < a; i++ ) {
 			self.gl.bindBuffer( self.gl.ARRAY_BUFFER, target_vao[i] );
 			self.gl.vertexAttribPointer( this.shaders[shader_index].attributes[i], this.shaders[shader_index].unit_length[i], self.gl.FLOAT, false, 0, 0 );
 		}
 	};
 
 	self.Object.prototype.free = function() {
-		for ( var i = 0; i < this.shaders.length; i++ ) {
-			self.gl.deleteProgram( this.shaders[i].program );
-			this.shaders[i].program = null;
-			for ( var j = 0; j < this.shaders[i].attributes.length; j++ ) {
-				self.gl.disableVertexAttribArray( this.shaders[i].attributes[j] );
-				this.shaders[i].attributes[j] = null;
+		if ( this.shaders !== null ) {
+			for ( var i = 0, a = this.shaders.length; i < a; i++ ) {
+				self.gl.deleteProgram( this.shaders[i].program );
+				this.shaders[i].program = null;
+				if ( this.shaders[i].attributes !== null ) {
+					for ( var j = 0, b = this.shaders[i].attributes.length; j < b; j++ ) {
+						self.gl.disableVertexAttribArray( this.shaders[i].attributes[this.shaders[i].attributes.length - 1] );
+						this.shaders[i].attributes[this.shaders[i].attributes.length - 1] = null;
+						this.shaders[i].attributes.pop();
+					}
+				}
+				this.shaders[i].attributes = null;
 			}
 		}
 		this.shaders = null;
-		for ( var i = 0; i < this.textures.length; i++ ) {
-			self.gl.deleteTexture( this.textures[i] );
-			this.textures[i] = null;
+
+		if ( this.vertices !== null ) {
+			for ( var i = 0, a = this.vertices.length; i < a; i++ ) {
+				this.vertices[this.vertices.length - 1] = null;
+				this.vertices.pop();
+			}
 		}
-		this.textures = null;
-		for ( var i = 0; i < this.buffers.length; i++ ) {
-			self.gl.deleteBuffer( this.buffers[i] );
-			this.buffers[i] = null;
+		this.vertices = null;
+
+		if ( this.buffers !== null ) {
+			for ( var i = 0, a = this.buffers.length; i < a; i++ ) {
+				self.gl.deleteBuffer( this.buffers[this.buffers.length - 1] );
+				this.buffers[this.buffers.length - 1] = null;
+				this.buffers.pop();
+			}
 		}
 		this.buffers = null;
+
+		if ( this.vao !== null ) {
+			for ( var i = 0, a = this.vao.length; i < a; i++ ) {
+				this.vao[this.vao.length - 1] = null;
+				this.vao.pop();
+			}
+		}
+		this.vao = null;
+
+		this.vao_index = null;
+
+		if ( this.textures !== null ) {
+			for ( var i = 0, a = this.textures.length; i < a; i++ ) {
+				self.gl.deleteTexture( this.textures[this.textures.length - 1] );
+				this.textures[this.textures.length - 1] = null;
+				this.textures.pop();
+			}
+		}
+		this.textures = null;
+
+		this.callUniforms = null;
+
+		if ( this.geometry_mode !== null ) {
+			for ( var i = 0, a = this.geometry_mode.length; i < a; i++ ) {
+				this.geometry_mode[this.geometry_mode.length - 1] = null;
+				this.geometry_mode.pop();
+			}
+		}
+		this.geometry_mode = null;
+
+		if ( this.geometry_first !== null ) {
+			for ( var i = 0, a = this.geometry_first.length; i < a; i++ ) {
+				this.geometry_first[this.geometry_first.length - 1] = null;
+				this.geometry_first.pop();
+			}
+		}
+		this.geometry_first = null;
+
+		if ( this.geometry_count !== null ) {
+			for ( var i = 0, a = this.geometry_count.length; i < a; i++ ) {
+				this.geometry_count[this.geometry_count.length - 1] = null;
+				this.geometry_count.pop();
+			}
+		}
+		this.geometry_count = null;
+
+		this.x = null;
+		this.y = null;
+		this.z = null;
+		this.x_speed = null;
+		this.y_speed = null;
+		this.z_speed = null;
+
+		this.sx = null;
+		this.sy = null;
+		this.sz = null;
+		this.sx_speed = null;
+		this.sy_speed = null;
+		this.sz_speed = null;
+
+		this.angle = null;
+		this.rx = null;
+		this.ry = null;
+		this.rz = null;
+		this.angle_speed = null;
+		this.rx_speed = null;
+		this.ry_speed = null;
+		this.rz_speed = null;
+
+		if ( this.ks !== null ) {
+			for ( var i = 0, a = this.ks.length; i < a; i++ ) {
+				this.ks[this.ks.length - 1] = null;
+				this.ks.pop();
+			}
+		}
+		this.ks = null;
+
+		if ( this.kd !== null ) {
+			for ( var i = 0, a = this.kd.length; i < a; i++ ) {
+				this.kd[this.kd.length - 1] = null;
+				this.kd.pop();
+			}
+		}
+		this.kd = null;
+
+		if ( this.ka !== null ) {
+			for ( var i = 0, a = this.ka.length; i < a; i++ ) {
+				this.ka[this.ka.length - 1] = null;
+				this.ka.pop();
+			}
+		}
+		this.ka = null;
+
+		this.x_radius = null;
+		this.y_radius = null;
+		this.z_radius = null;
+
+		// Reserve should be number or string or function, not object or array
+		// If you want store object or array in reserve, make free memory process itself
+		if ( this.reserve !== null ) {
+			for ( var i = 0, a = this.reserve.length; i < a; i++ ) {
+				this.reserve[this.reserve.length - 1] = null;
+				this.reserve.pop();
+			}
+		}
+		this.reserve = null;
+
 	};
 
 	/**
@@ -484,12 +604,12 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 			alert( "Unable to initialize the shader program: " + self.gl.getProgramInfoLog( this.program ) );
 		}
 		
-		for ( var i = 0; i < parameter.attributes.length; i++ ) {
+		for ( var i = 0, a = parameter.attributes.length; i < a; i++ ) {
 			this.attributes[i] = self.gl.getAttribLocation( this.program, parameter.attributes[i] );
 			self.gl.enableVertexAttribArray( this.attributes[i] );
 		}
 
-		for ( var i = 0; i < parameter.unit_length.length; i++ ) {
+		for ( var i = 0, a = parameter.unit_length.length; i < a; i++ ) {
 			this.unit_length[i] = parameter.unit_length[i];
 		}
 
@@ -606,11 +726,11 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		this.sy_speed = parameter.sy_speed;
 		this.sz_speed = parameter.sz_speed;
 
-		this.rangle = parameter.rangle;
+		this.angle = parameter.angle;
 		this.rx = parameter.rx;
 		this.ry = parameter.ry;
 		this.rz = parameter.rz;
-		this.rangle_speed = parameter.rangle_speed;
+		this.angle_speed = parameter.angle_speed;
 		this.rx_speed = parameter.rx_speed;
 		this.ry_speed = parameter.ry_speed;
 		this.rz_speed = parameter.rz_speed;
@@ -619,19 +739,17 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		this.kd = parameter.kd;
 		this.ka = parameter.ka;
 
-		this.x_length = parameter.x_length;
-		this.y_length = parameter.y_length;
-		this.z_length = parameter.z_length;
+		this.x_radius = parameter.x_radius;
+		this.y_radius = parameter.y_radius;
+		this.z_radius = parameter.z_radius;
 		this.reserve = parameter.reserve;
-
-		this.push( parameter );
 
 	};
 
 	// Inherit prototype of Array Object
 	self.ArrayObject.prototype = Object.create( Array.prototype );
 
-	self.ArrayObject.prototype.clone = function( parameter ) {
+	self.ArrayObject.prototype.add = function( parameter ) {
 		// If noting, initialize parameter
 		if ( typeof parameter !== "object" || parameter === null ) {
 			parameter = {};
@@ -744,8 +862,8 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 
 		// Rotation (Actual Degrees or Quaternions)
 		// Angle use for Quaternions
-		if ( typeof parameter.rangle !== "number" || parameter.rangle === null ) {
-			parameter.rangle = this.rangle;
+		if ( typeof parameter.angle !== "number" || parameter.angle === null ) {
+			parameter.angle = this.angle;
 		}
 		// Actual degrees or normalized vector as axis of rotation
 		if ( typeof parameter.rx !== "number" || parameter.rx === null ) {
@@ -759,8 +877,8 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		}
 
 		// Per milliseconds
-		if ( typeof parameter.rangle_speed !== "number" || parameter.rangle_speed === null ) {
-			parameter.rangle_speed = this.rangle_speed;
+		if ( typeof parameter.angle_speed !== "number" || parameter.angle_speed === null ) {
+			parameter.angle_speed = this.angle_speed;
 		}
 		if ( typeof parameter.rx_speed !== "number" || parameter.rx_speed === null ) {
 			parameter.rx_speed = this.rx_speed;
@@ -772,11 +890,11 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 			parameter.rz_speed = this.rz_speed;
 		}
 
-		push_object.rangle = parameter.rangle;
+		push_object.angle = parameter.angle;
 		push_object.rx = parameter.rx;
 		push_object.ry = parameter.ry;
 		push_object.rz = parameter.rz;
-		push_object.rangle_speed = parameter.rangle_speed;
+		push_object.angle_speed = parameter.angle_speed;
 		push_object.rx_speed = parameter.rx_speed;
 		push_object.ry_speed = parameter.ry_speed;
 		push_object.rz_speed = parameter.rz_speed;
@@ -799,31 +917,187 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 
 
 		// Length and Multipurpose Parameters
-		if ( typeof parameter.x_length !== "number" || parameter.x_length === null ) {
-			parameter.x_length = this.x_length;
+		if ( typeof parameter.x_radius !== "number" || parameter.x_radius === null ) {
+			parameter.x_radius = this.x_radius;
 		}
-		if ( typeof parameter.y_length !== "number" || parameter.y_length === null ) {
-			parameter.y_length = this.y_length;
+		if ( typeof parameter.y_radius !== "number" || parameter.y_radius === null ) {
+			parameter.y_radius = this.y_radius;
 		}
-		if ( typeof parameter.z_length !== "number" || parameter.z_length === null ) {
-			parameter.z_length = this.z_length;
+		if ( typeof parameter.z_radius !== "number" || parameter.z_radius === null ) {
+			parameter.z_radius = this.z_radius;
 		}
 		if ( typeof parameter.reserve !== "object" || parameter.reserve === null ) {
 			parameter.reserve = this.reserve;
 		}
 
-		push_object.x_length = parameter.x_length;
-		push_object.y_length = parameter.y_length;
-		push_object.z_length = parameter.z_length;
+		push_object.x_radius = parameter.x_radius;
+		push_object.y_radius = parameter.y_radius;
+		push_object.z_radius = parameter.z_radius;
 		push_object.reserve = parameter.reserve;
 
 		this.push( push_object );
+
 	};
 
 	self.ArrayObject.prototype.pict = function( parameter ) {
-		for ( var i = 0; i < this.length; i++ ) {
+		for ( var i = 0, a = this.length; i < a; i++ ) {
 			this[i].pict( parameter );
 		}
+	};
+
+	self.ArrayObject.prototype.delete = function( index ) {
+			this[index].free();
+			this[index] = null;
+			this.splice( index, 1 );
+	};
+
+	self.ArrayObject.prototype.free = function() {
+		// Free Array inheritance
+		for ( var i = 0, a = this.length; i < a; i++ ) {
+			this[this.length - 1].free();
+			this[this.length - 1] = null;
+			this.pop();
+		}
+
+		// Free Unique
+		if ( this.shaders !== null ) {
+			for ( var i = 0, a = this.shaders.length; i < a; i++ ) {
+				self.gl.deleteProgram( this.shaders[i].program );
+				this.shaders[i].program = null;
+				if ( this.shaders[i].attributes !== null ) {
+					for ( var j = 0, b = this.shaders[i].attributes.length; j < b; j++ ) {
+						self.gl.disableVertexAttribArray( this.shaders[i].attributes[this.shaders[i].attributes.length - 1] );
+						this.shaders[i].attributes[this.shaders[i].attributes.length - 1] = null;
+						this.shaders[i].attributes.pop();
+					}
+				}
+				this.shaders[i].attributes = null;
+			}
+		}
+		this.shaders = null;
+
+		if ( this.vertices !== null ) {
+			for ( var i = 0, a = this.vertices.length; i < a; i++ ) {
+				this.vertices[this.vertices.length - 1] = null;
+				this.vertices.pop();
+			}
+		}
+		this.vertices = null;
+
+		if ( this.buffers !== null ) {
+			for ( var i = 0, a = this.buffers.length; i < a; i++ ) {
+				self.gl.deleteBuffer( this.buffers[this.buffers.length - 1] );
+				this.buffers[this.buffers.length - 1] = null;
+				this.buffers.pop();
+			}
+		}
+		this.buffers = null;
+
+		if ( this.vao !== null ) {
+			for ( var i = 0, a = this.vao.length; i < a; i++ ) {
+				this.vao[this.vao.length - 1] = null;
+				this.vao.pop();
+			}
+		}
+		this.vao = null;
+
+		this.vao_index = null;
+
+		if ( this.textures !== null ) {
+			for ( var i = 0, a = this.textures.length; i < a; i++ ) {
+				self.gl.deleteTexture( this.textures[this.textures.length - 1] );
+				this.textures[this.textures.length - 1] = null;
+				this.textures.pop();
+			}
+		}
+		this.textures = null;
+
+		this.callUniforms = null;
+
+		if ( this.geometry_mode !== null ) {
+			for ( var i = 0, a = this.geometry_mode.length; i < a; i++ ) {
+				this.geometry_mode[this.geometry_mode.length - 1] = null;
+				this.geometry_mode.pop();
+			}
+		}
+		this.geometry_mode = null;
+
+		if ( this.geometry_first !== null ) {
+			for ( var i = 0, a = this.geometry_first.length; i < a; i++ ) {
+				this.geometry_first[this.geometry_first.length - 1] = null;
+				this.geometry_first.pop();
+			}
+		}
+		this.geometry_first = null;
+
+		if ( this.geometry_count !== null ) {
+			for ( var i = 0, a = this.geometry_count.length; i < a; i++ ) {
+				this.geometry_count[this.geometry_count.length - 1] = null;
+				this.geometry_count.pop();
+			}
+		}
+		this.geometry_count = null;
+
+		this.x = null;
+		this.y = null;
+		this.z = null;
+		this.x_speed = null;
+		this.y_speed = null;
+		this.z_speed = null;
+
+		this.sx = null;
+		this.sy = null;
+		this.sz = null;
+		this.sx_speed = null;
+		this.sy_speed = null;
+		this.sz_speed = null;
+
+		this.angle = null;
+		this.rx = null;
+		this.ry = null;
+		this.rz = null;
+		this.angle_speed = null;
+		this.rx_speed = null;
+		this.ry_speed = null;
+		this.rz_speed = null;
+
+		if ( this.ks !== null ) {
+			for ( var i = 0, a = this.ks.length; i < a; i++ ) {
+				this.ks[this.ks.length - 1] = null;
+				this.ks.pop();
+			}
+		}
+		this.ks = null;
+
+		if ( this.kd !== null ) {
+			for ( var i = 0, a = this.kd.length; i < a; i++ ) {
+				this.kd[this.kd.length - 1] = null;
+				this.kd.pop();
+			}
+		}
+		this.kd = null;
+
+		if ( this.ka !== null ) {
+			for ( var i = 0, a = this.ka.length; i < a; i++ ) {
+				this.ka[this.ka.length - 1] = null;
+				this.ka.pop();
+			}
+		}
+		this.ka = null;
+
+		this.x_radius = null;
+		this.y_radius = null;
+		this.z_radius = null;
+
+		// Reserve should be number or string or function, not object or array
+		// If you want store object or array in reserve, make free memory process itself
+		if ( this.reserve !== null ) {
+			for ( var i = 0, a = this.reserve.length; i < a; i++ ) {
+				this.reserve[this.reserve.length - 1] = null;
+				this.reserve.pop();
+			}
+		}
+		this.reserve = null;
 	};
 
 
@@ -1326,13 +1600,13 @@ SENORUTL.makeViewMat4 = function( camera_pos, target_pos, up ) {
 };
 
 
-/* Quterion and Versor*/
+/* Versor, a quaternion of rotation factor */
 
 /* For Rotation #1 */
 SENORUTL.makeVersor = function( a, x, y, z ) {
 	var versor = [];
 	var rad = SENORUTL.RAD_PER_ONE_DEG * a;
-	var vec3 = SENORUTL.normalizeVec3( [x, y, z] );
+	var vec3 = SENORUTL.normalizeVec3([x, y, z]);
 	versor[0] = Math.cos( rad / 2.0 ); /* w */
 	versor[1] = Math.sin( rad / 2.0 ) * vec3[0]; /* x */
 	versor[2] = Math.sin( rad / 2.0 ) * vec3[1]; /* y */
@@ -1343,7 +1617,7 @@ SENORUTL.makeVersor = function( a, x, y, z ) {
 
 
 /*For Rotation #2*/
-SENORUTL.quatToMat4 = function( versor ) {
+SENORUTL.versorToMat4 = function( versor ) {
 	var mat4 = [];
 	var w = versor[0];
 	var x = versor[1];
@@ -1371,7 +1645,7 @@ SENORUTL.quatToMat4 = function( versor ) {
 
 
 /**
- * Convert .obj raw data to object
+ * Convert raw data of Wavefront .obj file to object
  */
 SENORUTL.attachObjRaw = function( id ) {
 	var strings = document.getElementById( id );
@@ -1384,7 +1658,7 @@ SENORUTL.attachObjRaw = function( id ) {
 	// new Object() Or {}
 	var return_object = new Object();
 	//console.log(strings);
-	for ( var i = 0; i < strings.length; i++ ) {
+	for ( var i = 0, a = strings.length; i < a; i++ ) {
 		words = strings[i].split(/\s+/);
 		//console.log(words);
 		switch ( words[0] ) {
@@ -1402,7 +1676,7 @@ SENORUTL.attachObjRaw = function( id ) {
 					len = 0;
 				}
 				return_object.geometry.vertices[len] = new Array();
-				for ( var k = 1; k < words.length; k++ ) {
+				for ( var k = 1, c = words.length; k < c; k++ ) {
 					return_object.geometry.vertices[len][k - 1] = parseFloat( words[k] );
 				}
 
@@ -1419,7 +1693,7 @@ SENORUTL.attachObjRaw = function( id ) {
 					len = 0;
 				}
 				return_object.texture.vertices[len] = new Array();
-				for ( var k = 1; k < words.length; k++ ) {
+				for ( var k = 1, c = words.length; k < c; k++ ) {
 					return_object.texture.vertices[len][k - 1] = parseFloat( words[k] );
 				}
 
@@ -1436,7 +1710,7 @@ SENORUTL.attachObjRaw = function( id ) {
 					len = 0;
 				}
 				return_object.normal.vertices[len] = new Array();
-				for ( var k = 1; k < words.length; k++ ) {
+				for ( var k = 1, c = words.length; k < c; k++ ) {
 					return_object.normal.vertices[len][k - 1] = parseFloat( words[k] );
 				}
 
@@ -1446,14 +1720,14 @@ SENORUTL.attachObjRaw = function( id ) {
 				if ( ! return_object.parameter ) {
 					return_object.parameter = new Array();
 				}
-				for ( var k = 1; k < words.length; k++ ) {
+				for ( var k = 1, c = words.length; k < c; k++ ) {
 					return_object.parameter.push( parseFloat( words[k] ) );
 				}
 
 				break;
 
 			case "f":
-				for ( var k = 1; k < words.length; k++ ) {
+				for ( var k = 1, c = words.length; k < c; k++ ) {
 					numbers = words[k].split(/\//);
 					if ( numbers[0] !== "" && typeof numbers[0] !== "undefined" ) {
 						return_object.geometry.index.push( parseInt( numbers[0] ) );
@@ -1533,4 +1807,32 @@ SENORUTL.makeVertices = function( vertices_arr, index ) {
 	}
 
 	return vertices;
+};
+
+
+/**
+ * Hit Checker for WebGL Object
+ * For Speed, omitted null check. Be cautious
+ */
+SENORUTL.hitCheck = function( object_a, object_b ) {
+	var diff_x = object_a.x - object_b.x;
+	if ( diff_x < 0 ) {
+		diff_x = -diff_x;
+	}
+
+	var diff_y = object_a.y - object_b.y;
+	if ( diff_y < 0 ) {
+		diff_y = -diff_y;
+	}
+
+	var diff_z = object_a.z - object_b.z;
+	if ( diff_z < 0 ) {
+		diff_z = -diff_z;
+	}
+
+	if ( diff_x < object_a.x_radius + object_b.x_radius && diff_y < object_a.y_radius + object_b.y_radius && diff_z < object_a.z_radius + object_b.z_radius ) {
+		return true;
+	}
+
+	return false;
 };

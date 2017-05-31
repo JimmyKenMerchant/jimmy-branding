@@ -534,7 +534,44 @@ function jimmy_branding_output() {
 	}
 ?>
 	<div id="jimmy-branding-wrap">
-		<div id="jimmy-branding-content" style="width: <?php if ( 'ratio' === $jimmy_branding_option_res_choice ) { echo $jimmy_branding_option_width_percents . '%'; } else { echo $jimmy_branding_option_width . 'px'; } ?>;height: <?php echo $jimmy_branding_option_height_min; ?>px;" data-min="<?php echo $jimmy_branding_option_height_min; ?>px"<?php if ( 'ratio' === $jimmy_branding_option_res_choice ) { echo ' data-minpercents="' . $jimmy_branding_option_height_min_percents . '"'; } ?> data-max="<?php echo $jimmy_branding_option_height_max; ?>px"<?php if ( 'ratio' === $jimmy_branding_option_res_choice ) { echo ' data-maxpercents="' . $jimmy_branding_option_height_max_percents . '"'; } ?><?php if ( 'ratio' === $jimmy_branding_option_res_choice ) { echo ' data-widthpercents="' . $jimmy_branding_option_width_percents . '"'; } ?> data-color="<?php echo $jimmy_branding_option_color_opener; ?>">
+		<div id="jimmy-branding-content" style="width: <?php
+
+	if ( 'ratio' === $jimmy_branding_option_res_choice ) {
+		echo $jimmy_branding_option_width_percents . '%';
+	} else {
+		echo $jimmy_branding_option_width . 'px';
+	}
+
+?>;height: <?php
+
+	echo $jimmy_branding_option_height_min;
+
+?>px;" data-min="<?php
+
+	echo $jimmy_branding_option_height_min;
+
+?>px"<?php
+
+	if ( 'ratio' === $jimmy_branding_option_res_choice ) {
+		echo ' data-minpercents="' . $jimmy_branding_option_height_min_percents . '"';
+	}
+
+?> data-max="<?php
+
+	echo $jimmy_branding_option_height_max;
+
+?>px"<?php
+
+	if ( 'ratio' === $jimmy_branding_option_res_choice ) {
+		echo ' data-maxpercents="' . $jimmy_branding_option_height_max_percents . '"';
+		echo ' data-widthpercents="' . $jimmy_branding_option_width_percents . '"';
+	}
+
+?> data-color="<?php
+
+	echo $jimmy_branding_option_color_opener;
+
+?>">
 			<?php echo $branding_now . "\r\n"; ?>
 <?php
 	if ( $jimmy_branding_option_opener_choice === 'display' ) :
