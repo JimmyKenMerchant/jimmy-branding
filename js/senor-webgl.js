@@ -123,10 +123,11 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 	 * shaders, vertices, buffers, vao, vao_index,
 	 * textures, callUniforms, geometry_mode, geometry_first, geometry_count,
 	 * x, y, z, x_speed, y_speed, z_speed,
+	 * origin_x, origin_y, origin_z,
 	 * sx, sy, sz, sx_speed, sy_speed, sz_speed,
 	 * angle, rx, ry, rz, angle_speed, rx_speed, ry_speed, rz_speed,
 	 * ks, kd, ka,
-	 * x_radius, y_radius, z_radius, reserve
+	 * x_radius, y_radius, z_radius, sequence, reserve
 	 */
 	self.Object = function( parameter ) {
 		// If noting, initialize parameter
@@ -202,12 +203,26 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 			parameter.z_speed = 0.0;
 		}
 
+		// Use to define rotation origin
+		if ( typeof parameter.x_origin !== "number" || parameter.x_origin === null ) {
+			parameter.x_origin = 0.0;
+		}
+		if ( typeof parameter.y_origin !== "number" || parameter.y_origin === null ) {
+			parameter.y_origin = 0.0;
+		}
+		if ( typeof parameter.z_origin !== "number" || parameter.z_origin === null ) {
+			parameter.z_origin = 0.0;
+		}
+
 		this.x = parameter.x;
 		this.y = parameter.y;
 		this.z = parameter.z;
 		this.x_speed = parameter.x_speed;
 		this.y_speed = parameter.y_speed;
 		this.z_speed = parameter.z_speed;
+		this.x_origin = parameter.x_origin;
+		this.y_origin = parameter.y_origin;
+		this.z_origin = parameter.z_origin;
 
 
 		// Scale
@@ -306,6 +321,13 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		if ( typeof parameter.z_radius !== "number" || parameter.z_radius === null ) {
 			parameter.z_radius = 0.0;
 		}
+
+		// Multi (Two) Dimentional Array, e.g Store Array Number and Sequence Number in Use on First
+		if ( typeof parameter.sequence !== "object" || parameter.sequence === null ) {
+			parameter.sequence = [];
+		}
+
+		// Uni Dimentional Array
 		if ( typeof parameter.reserve !== "object" || parameter.reserve === null ) {
 			parameter.reserve = [];
 		}
@@ -313,6 +335,7 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		this.x_radius = parameter.x_radius;
 		this.y_radius = parameter.y_radius;
 		this.z_radius = parameter.z_radius;
+		this.sequence = parameter.sequence;
 		this.reserve = parameter.reserve;
 	};
 
@@ -422,18 +445,20 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 	};
 
 	self.Object.prototype.free = function() {
+		// Free Unique objects but not sanitize WebGL side because of not original
 		if ( this.shaders !== null ) {
 			for ( var i = 0, a = this.shaders.length; i < a; i++ ) {
-				self.gl.deleteProgram( this.shaders[i].program );
-				this.shaders[i].program = null;
-				if ( this.shaders[i].attributes !== null ) {
-					for ( var j = 0, b = this.shaders[i].attributes.length; j < b; j++ ) {
-						self.gl.disableVertexAttribArray( this.shaders[i].attributes[this.shaders[i].attributes.length - 1] );
-						this.shaders[i].attributes[this.shaders[i].attributes.length - 1] = null;
-						this.shaders[i].attributes.pop();
+				var index = this.shaders.length - 1;
+				this.shaders[index].program = null;
+				if ( this.shaders[index].attributes !== null ) {
+					for ( var j = 0, b = this.shaders[index].attributes.length; j < b; j++ ) {
+						this.shaders[index].attributes[this.shaders[index].attributes.length - 1] = null;
+						this.shaders[index].attributes.pop();
 					}
 				}
-				this.shaders[i].attributes = null;
+				this.shaders[index].attributes = null;
+				this.shaders[index] = null;
+				this.shaders.pop();
 			}
 		}
 		this.shaders = null;
@@ -448,7 +473,6 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 
 		if ( this.buffers !== null ) {
 			for ( var i = 0, a = this.buffers.length; i < a; i++ ) {
-				self.gl.deleteBuffer( this.buffers[this.buffers.length - 1] );
 				this.buffers[this.buffers.length - 1] = null;
 				this.buffers.pop();
 			}
@@ -467,7 +491,6 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 
 		if ( this.textures !== null ) {
 			for ( var i = 0, a = this.textures.length; i < a; i++ ) {
-				self.gl.deleteTexture( this.textures[this.textures.length - 1] );
 				this.textures[this.textures.length - 1] = null;
 				this.textures.pop();
 			}
@@ -506,6 +529,9 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		this.x_speed = null;
 		this.y_speed = null;
 		this.z_speed = null;
+		this.x_origin = null;
+		this.y_origin = null;
+		this.z_origin = null;
 
 		this.sx = null;
 		this.sy = null;
@@ -551,6 +577,22 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		this.y_radius = null;
 		this.z_radius = null;
 
+		// Multi (Two) Dimentional Array
+		if ( this.sequence !== null ) {
+			for ( var i = 0, a = this.sequence.length; i < a; i++ ) {
+				var index = this.sequence.length - 1;
+				if ( this.sequence[index] !== null ) {
+					for ( var j = 0, b = this.sequence[index].length; j < b; j++ ) {
+						this.sequence[index][this.sequence[index].length - 1] = null;
+						this.sequence[index].pop();
+					}
+				}
+				this.sequence[index] = null;
+				this.sequence.pop();
+			}
+		}
+		this.sequence = null;
+
 		// Reserve should be number or string or function, not object or array
 		// If you want store object or array in reserve, make free memory process itself
 		if ( this.reserve !== null ) {
@@ -560,6 +602,36 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 			}
 		}
 		this.reserve = null;
+
+	};
+
+	self.Object.prototype.sanitize = function() {
+		// Sanitize WebGL Side because of original object
+		// If free ArrayObject, then sanitize original object too when no future use of shaders, etc.
+		if ( this.shaders !== null ) {
+			for ( var i = 0, a = this.shaders.length; i < a; i++ ) {
+				self.gl.deleteProgram( this.shaders[i].program );
+				if ( this.shaders[i].attributes !== null ) {
+					for ( var j = 0, b = this.shaders[i].attributes.length; j < b; j++ ) {
+						self.gl.disableVertexAttribArray( this.shaders[i].attributes[j] );
+					}
+				}
+			}
+		}
+
+		if ( this.buffers !== null ) {
+			for ( var i = 0, a = this.buffers.length; i < a; i++ ) {
+				self.gl.deleteBuffer( this.buffers[i] );
+			}
+		}
+
+		if ( this.textures !== null ) {
+			for ( var i = 0, a = this.textures.length; i < a; i++ ) {
+				self.gl.deleteTexture( this.textures[i] );
+			}
+		}
+
+		this.free();
 
 	};
 
@@ -718,6 +790,9 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		this.x_speed = parameter.x_speed;
 		this.y_speed = parameter.y_speed;
 		this.z_speed = parameter.z_speed;
+		this.x_origin = parameter.x_origin;
+		this.y_origin = parameter.y_origin;
+		this.z_origin = parameter.z_origin;
 
 		this.sx = parameter.sx;
 		this.sy = parameter.sy;
@@ -742,6 +817,7 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		this.x_radius = parameter.x_radius;
 		this.y_radius = parameter.y_radius;
 		this.z_radius = parameter.z_radius;
+		this.sequence = parameter.sequence;
 		this.reserve = parameter.reserve;
 
 	};
@@ -824,12 +900,26 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 			parameter.z_speed = this.z_speed;
 		}
 
+		// Use to define rotation origin
+		if ( typeof parameter.x_origin !== "number" || parameter.x_origin === null ) {
+			parameter.x_origin = this.x_origin;
+		}
+		if ( typeof parameter.y_origin !== "number" || parameter.y_origin === null ) {
+			parameter.y_origin = this.y_origin;
+		}
+		if ( typeof parameter.z_origin !== "number" || parameter.z_origin === null ) {
+			parameter.z_origin = this.z_origin;
+		}
+
 		push_object.x = parameter.x;
 		push_object.y = parameter.y;
 		push_object.z = parameter.z;
 		push_object.x_speed = parameter.x_speed;
 		push_object.y_speed = parameter.y_speed;
 		push_object.z_speed = parameter.z_speed;
+		push_object.x_origin = parameter.x_origin;
+		push_object.y_origin = parameter.y_origin;
+		push_object.z_origin = parameter.z_origin;
 
 		// Scale
 		if ( typeof parameter.sx !== "number" || parameter.sx === null ) {
@@ -926,6 +1016,13 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		if ( typeof parameter.z_radius !== "number" || parameter.z_radius === null ) {
 			parameter.z_radius = this.z_radius;
 		}
+
+		// Multi (Two) Dimentional Array, e.g Store Array Number and Sequence Number in Use on First
+		if ( typeof parameter.sequence !== "object" || parameter.sequence === null ) {
+			parameter.sequence = this.sequence;
+		}
+
+		// Uni Dimentional Array
 		if ( typeof parameter.reserve !== "object" || parameter.reserve === null ) {
 			parameter.reserve = this.reserve;
 		}
@@ -933,6 +1030,7 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		push_object.x_radius = parameter.x_radius;
 		push_object.y_radius = parameter.y_radius;
 		push_object.z_radius = parameter.z_radius;
+		push_object.sequence = parameter.sequence;
 		push_object.reserve = parameter.reserve;
 
 		this.push( push_object );
@@ -945,33 +1043,41 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		}
 	};
 
+	// Just only cut references from parent node
 	self.ArrayObject.prototype.delete = function( index ) {
-			this[index].free();
+			this[index] = null;
+			this.splice( index, 1 );
+	};
+
+	// Considering Garbage Collection's movement (Null All)
+	self.ArrayObject.prototype.deleteNull = function( index ) {
+			this[index].free;
 			this[index] = null;
 			this.splice( index, 1 );
 	};
 
 	self.ArrayObject.prototype.free = function() {
-		// Free Array inheritance
+		// Free objects of Array inheritance
 		for ( var i = 0, a = this.length; i < a; i++ ) {
 			this[this.length - 1].free();
 			this[this.length - 1] = null;
 			this.pop();
 		}
 
-		// Free Unique
+		// Free Unique objects but not sanitize WebGL side because of not original
 		if ( this.shaders !== null ) {
 			for ( var i = 0, a = this.shaders.length; i < a; i++ ) {
-				self.gl.deleteProgram( this.shaders[i].program );
-				this.shaders[i].program = null;
-				if ( this.shaders[i].attributes !== null ) {
-					for ( var j = 0, b = this.shaders[i].attributes.length; j < b; j++ ) {
-						self.gl.disableVertexAttribArray( this.shaders[i].attributes[this.shaders[i].attributes.length - 1] );
-						this.shaders[i].attributes[this.shaders[i].attributes.length - 1] = null;
-						this.shaders[i].attributes.pop();
+				var index = this.shaders.length - 1;
+				this.shaders[index].program = null;
+				if ( this.shaders[index].attributes !== null ) {
+					for ( var j = 0, b = this.shaders[index].attributes.length; j < b; j++ ) {
+						this.shaders[index].attributes[this.shaders[index].attributes.length - 1] = null;
+						this.shaders[index].attributes.pop();
 					}
 				}
-				this.shaders[i].attributes = null;
+				this.shaders[index].attributes = null;
+				this.shaders[index] = null;
+				this.shaders.pop();
 			}
 		}
 		this.shaders = null;
@@ -986,7 +1092,6 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 
 		if ( this.buffers !== null ) {
 			for ( var i = 0, a = this.buffers.length; i < a; i++ ) {
-				self.gl.deleteBuffer( this.buffers[this.buffers.length - 1] );
 				this.buffers[this.buffers.length - 1] = null;
 				this.buffers.pop();
 			}
@@ -1005,7 +1110,6 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 
 		if ( this.textures !== null ) {
 			for ( var i = 0, a = this.textures.length; i < a; i++ ) {
-				self.gl.deleteTexture( this.textures[this.textures.length - 1] );
 				this.textures[this.textures.length - 1] = null;
 				this.textures.pop();
 			}
@@ -1044,6 +1148,9 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		this.x_speed = null;
 		this.y_speed = null;
 		this.z_speed = null;
+		this.x_origin = null;
+		this.y_origin = null;
+		this.z_origin = null;
 
 		this.sx = null;
 		this.sy = null;
@@ -1088,6 +1195,22 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		this.x_radius = null;
 		this.y_radius = null;
 		this.z_radius = null;
+
+		// Multi (Two) Dimentional Array
+		if ( this.sequence !== null ) {
+			for ( var i = 0, a = this.sequence.length; i < a; i++ ) {
+				var index = this.sequence.length - 1;
+				if ( this.sequence[index] !== null ) {
+					for ( var j = 0, b = this.sequence[index].length; j < b; j++ ) {
+						this.sequence[index][this.sequence[index].length - 1] = null;
+						this.sequence[index].pop();
+					}
+				}
+				this.sequence[index] = null;
+				this.sequence.pop();
+			}
+		}
+		this.sequence = null;
 
 		// Reserve should be number or string or function, not object or array
 		// If you want store object or array in reserve, make free memory process itself
