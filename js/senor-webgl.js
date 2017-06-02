@@ -1683,8 +1683,8 @@ SENORUTL.perspectiveMat4 = function( fovy, aspect, near, far ) {
 
 
 /**
- * up means which axis is up on dimention by normalized vector
- * if X is horizontal, Y is up, Z is depth, [0.0, 1.0, 0.0]
+ * 'up' means which axis is up on dimention by normalized vector
+ * If X is horizontal, Y is up, Z is depth, [0.0, 1.0, 0.0]
  * Be cautious that blender uses Z-up
  */
 SENORUTL.makeViewMat4 = function( camera_pos, target_pos, up ) {
@@ -1936,6 +1936,8 @@ SENORUTL.makeVertices = function( vertices_arr, index ) {
 /**
  * Hit Checker for WebGL Object
  * For Speed, omitted null check. Be cautious
+ * This Functions is so basic, not considering origin transformation, rotation and scale
+ * Hit Check uses much on one process of a loop, so use it for the stem of the object
  */
 SENORUTL.hitCheck = function( object_a, object_b ) {
 	var diff_x = object_a.x - object_b.x;
