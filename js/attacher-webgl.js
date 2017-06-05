@@ -18,6 +18,7 @@ var SENORUTL = SENORUTL || {};
  * This needs 'new' declaration
  *
  * parameter.object is the reference (aliasing) type parameter
+ * Node.clientWidth includes padding, equivalent to Node.innerWidth of jQuery
  */
 SENORUTL.attachDisplayOfJimmyBranding = function( parameter ) {
 	var self = this;
@@ -42,6 +43,7 @@ SENORUTL.attachDisplayOfJimmyBranding = function( parameter ) {
 	var ht_max_percents = 0;
 	var wd = 0;
 	var wd_percents = 0;
+	var grand_parent = parameter.display.parentNode.parentNode;
 	attachDisplay();
 	self.aspect = parameter.canvas.width / parameter.canvas.height;
 
@@ -67,14 +69,14 @@ SENORUTL.attachDisplayOfJimmyBranding = function( parameter ) {
 		// Considering multiple usages of this object
 		window.addEventListener( 'resize', function() {
 			if ( parameter.display.hasAttribute( 'data-widthpercents' ) ) {
-				wd = window.innerWidth * wd_percents;
+				wd = grand_parent.clientWidth * wd_percents;
 				wd = parseInt( wd );
 			}
 			parameter.canvas.width = wd;
 			parameter.canvas.style.width = parameter.canvas.width + 'px';
 
 			if ( parameter.display.hasAttribute( 'data-maxpercents' ) ) {
-				ht_max = window.innerWidth * wd_percents * ht_max_percents;
+				ht_max = grand_parent.clientWidth * wd_percents * ht_max_percents;
 				ht_max = parseInt( ht_max );
 			}
 			parameter.canvas.height = ht_max;
@@ -99,14 +101,14 @@ SENORUTL.attachDisplayOfJimmyBranding = function( parameter ) {
 	function renderSizeChange() {
 
 		if ( parameter.display.hasAttribute( 'data-widthpercents' ) ) {
-			wd = window.innerWidth * wd_percents;
+			wd = grand_parent.clientWidth * wd_percents;
 			wd = parseInt( wd );
 		}
 		parameter.canvas.width = wd;
 		parameter.canvas.style.width = parameter.canvas.width + 'px';
 
 		if ( parameter.display.hasAttribute( 'data-maxpercents' ) ) {
-			ht_max = window.innerWidth * wd_percents * ht_max_percents;
+			ht_max = grand_parent.clientWidth * wd_percents * ht_max_percents;
 			ht_max = parseInt( ht_max );
 		}
 		parameter.canvas.height = ht_max;

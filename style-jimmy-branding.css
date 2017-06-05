@@ -2,12 +2,12 @@
 Jimmy Branding
 --------------------------------------------------------------*/
 
-#jimmy-branding-wrap {
+.jimmy-branding-wrap {
 	width: 100%;
 	text-align: center;
 }
 
-#jimmy-branding-content {
+.jimmy-branding-wrap > div {
 	display: inline-block;
 	vertical-align: top;
 	position: relative;
@@ -19,7 +19,7 @@ Jimmy Branding
 	overflow: hidden;
 }
 
-#jimmy-branding-opener {
+.jimmy-branding-opener {
 	position: absolute;
 	width: 0;
 	height: 0;

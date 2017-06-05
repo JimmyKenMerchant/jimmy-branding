@@ -1961,3 +1961,12 @@ SENORUTL.hitCheck = function( object_a, object_b ) {
 
 	return false;
 };
+
+/**
+ * Get Float Random
+ * Math.random returns 0 to 1 float
+ */
+SENORUTL.getRandomFloat = function( min, max ) {
+	var result = ( Math.random() * ( max - min ) ) + min;
+	return result;
+};

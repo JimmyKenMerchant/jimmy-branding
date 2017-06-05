@@ -85,6 +85,7 @@ function jimmy_branding_roles_customize() {
 	add_option( 'jimmy_branding_option_width_opener', 28 );
 	add_option( 'jimmy_branding_option_opener_choice', esc_html( 'display' ) );
 	add_option( 'jimmy_branding_option_webgl_choice', esc_html( 'none' ) );
+	add_option( 'jimmy_branding_option_shortcode_choice', esc_html( 'none' ) );
 
 }
 register_activation_hook( __FILE__, 'jimmy_branding_roles_customize' );
@@ -131,6 +132,7 @@ function jimmy_branding_roles_retrieve() {
 	delete_option( 'jimmy_branding_option_width_opener' );
 	delete_option( 'jimmy_branding_option_opener_choice' );
 	delete_option( 'jimmy_branding_option_webgl_choice' );
+	delete_option( 'jimmy_branding_option_shortcode_choice' );
 }
 register_deactivation_hook( __FILE__, 'jimmy_branding_roles_retrieve' );
 
@@ -143,21 +145,26 @@ function jimmy_branding_script() {
 
 	if ( ! empty( get_option( 'jimmy_branding_option_content' ) ) ) {
 
-		if ( 'only' === get_option( 'jimmy_branding_option_webgl_choice' ) ) {
+		if ( 'none' !== get_option( 'jimmy_branding_option_webgl_choice' ) ) {
 			wp_enqueue_script( 'jimmy-branding-senor-webgl',  plugins_url( 'js/senor-webgl.js', __FILE__ ), array(), '1.0' );
 			wp_enqueue_script( 'jimmy-branding-attacher-webgl',  plugins_url( 'js/attacher-webgl.js', __FILE__ ), array( 'jimmy-branding-senor-webgl' ), '1.0' );
 		}
 
 		if ( 'display' === get_option( 'jimmy_branding_option_opener_choice' ) ) {
-			wp_enqueue_script( 'jimmy-branding-window-opener',  plugins_url( 'js/window-opener.js', __FILE__ ), array(), '1.0', true );
+			wp_enqueue_script( 'jimmy-branding-window-opener',  plugins_url( 'js/window-opener.js', __FILE__ ), array( 'jquery' ), '1.0' );
 		}
 
-		wp_enqueue_style( 'jimmy-branding-style',  plugins_url( 'style-jimmy-branding.css', __FILE__ ), array(), null );
+		wp_enqueue_style( 'jimmy-branding-style',  plugins_url( 'style-jimmy-branding.css', __FILE__ ), array(), '1.0' );
 	} else {
 
 		if ( 'alone' === get_option( 'jimmy_branding_option_webgl_choice' ) ) {
 			wp_enqueue_script( 'jimmy-branding-senor-webgl',  plugins_url( 'js/senor-webgl.js', __FILE__ ), array(), '1.0' );
 			wp_enqueue_script( 'jimmy-branding-attacher-webgl',  plugins_url( 'js/attacher-webgl.js', __FILE__ ), array( 'jimmy-branding-senor-webgl' ), '1.0' );
+		}
+
+		if ( 'use' === get_option( 'jimmy_branding_option_shortcode_choice' ) ) {
+			wp_enqueue_script( 'jimmy-branding-window-opener',  plugins_url( 'js/window-opener.js', __FILE__ ), array( 'jquery' ), '1.0' );
+			wp_enqueue_style( 'jimmy-branding-style',  plugins_url( 'style-jimmy-branding.css', __FILE__ ), array(), '1.0' );
 		}
 
 	}
@@ -473,11 +480,31 @@ Now On: <?php echo $branding_now; ?>
 ?>
 	<div class="jimmy-branding-admin-form-section">
 		<label unselectable="on">SENOR WebGL Library:</label>
-		<input class="jimmy-branding-admin-input" type="radio" name="jimmy_branding_webgl_choice_value" value="only"<?php if ( 'only' === $jimmy_branding_option_webgl_choice ) { echo ' checked="checked"'; }?> unselectable="on" />
-		<label unselectable="on">Only with Jimmy Branding</label>
 		<input class="jimmy-branding-admin-input" type="radio" name="jimmy_branding_webgl_choice_value" value="alone"<?php if ( 'alone' === $jimmy_branding_option_webgl_choice ) { echo ' checked="checked"'; }?> unselectable="on" />
 		<label unselectable="on">Stand Alone</label>
+		<input class="jimmy-branding-admin-input" type="radio" name="jimmy_branding_webgl_choice_value" value="only"<?php if ( 'only' === $jimmy_branding_option_webgl_choice ) { echo ' checked="checked"'; }?> unselectable="on" />
+		<label unselectable="on">Only with Jimmy Branding</label>
 		<input class="jimmy-branding-admin-input" type="radio" name="jimmy_branding_webgl_choice_value" value="none"<?php if ( 'none' === $jimmy_branding_option_webgl_choice ) { echo ' checked="checked"'; }?> unselectable="on" />
+		<label unselectable="on">None</label>
+	</div>
+
+<?php
+
+	if ( isset( $_POST['jimmy_branding_change'] ) ) {
+		$jimmy_branding_option_shortcode_choice = esc_html( $_POST['jimmy_branding_shortcode_choice_value'] );
+		if ( $jimmy_branding_option_shortcode_choice !== get_option( 'jimmy_branding_option_shortcode_choice' ) ) {
+			update_option( 'jimmy_branding_option_shortcode_choice', $jimmy_branding_option_shortcode_choice );
+		}
+	} else {
+		$jimmy_branding_option_shortcode_choice = get_option( 'jimmy_branding_option_shortcode_choice' );
+	}
+
+?>
+	<div class="jimmy-branding-admin-form-section">
+		<label unselectable="on">Shortcode Usage:</label>
+		<input class="jimmy-branding-admin-input" type="radio" name="jimmy_branding_shortcode_choice_value" value="use"<?php if ( 'use' === $jimmy_branding_option_shortcode_choice ) { echo ' checked="checked"'; }?> unselectable="on" />
+		<label unselectable="on">Use</label>
+		<input class="jimmy-branding-admin-input" type="radio" name="jimmy_branding_shortcode_choice_value" value="none"<?php if ( 'none' === $jimmy_branding_option_shortcode_choice ) { echo ' checked="checked"'; }?> unselectable="on" />
 		<label unselectable="on">None</label>
 	</div>
 
@@ -503,7 +530,9 @@ Now On: <?php echo $branding_now; ?>
  *	jimmy_branding_output();
  *}
  */
-function jimmy_branding_output() {
+function jimmy_branding_output( $id_pre = 'jimmy-branding' ) {
+	$id_content = $id_pre . '-content';
+	$id_opener = $id_pre . '-opener';
 
 	if ( ! get_option( 'jimmy_branding_option_content' ) ) {
 		return false;
@@ -533,8 +562,8 @@ function jimmy_branding_output() {
 
 	}
 ?>
-	<div id="jimmy-branding-wrap">
-		<div id="jimmy-branding-content" style="width: <?php
+	<div class="jimmy-branding-wrap">
+		<div id="<?php echo $id_content; ?>" style="width: <?php
 
 	if ( 'ratio' === $jimmy_branding_option_res_choice ) {
 		echo $jimmy_branding_option_width_percents . '%';
@@ -576,7 +605,7 @@ function jimmy_branding_output() {
 <?php
 	if ( $jimmy_branding_option_opener_choice === 'display' ) :
 ?>
-			<div id="jimmy-branding-opener" style="font-size: <?php echo $jimmy_branding_option_width_opener; ?>px;border-top: 0.9em solid <?php echo $jimmy_branding_option_color_opener; ?>;">
+			<div id="<?php echo $id_opener; ?>" class="jimmy-branding-opener" style="font-size: <?php echo $jimmy_branding_option_width_opener; ?>px;border-top: 0.9em solid <?php echo $jimmy_branding_option_color_opener; ?>;">
 				<span class="screen-reader-text">
 					<?php echo 'Expand Branding' . "\r\n"; ?>
 				</span>
@@ -585,8 +614,120 @@ function jimmy_branding_output() {
 	endif;
 ?>
 		</div>
-	</div><!-- #jimmy-branding-wrap -->
+	</div><!-- .jimmy-branding-wrap -->
+<script type="text/javascript" defer>
+JIMMY_BRANDING.windowOpener( "<?php echo $id_content; ?>", "<?php echo $id_opener; ?>" );
+</script>
 <?php
 
 	return true;
+}
+
+
+/**
+ * Make shortcode [jimmy_branding]
+ * e.g. [jimmy_branding id="" name=""]
+ * Make Stand Alone Jimmy Branding Window
+ * Ratio is enabled. Be cautious that IT'S BY WHOLE WINDOW SIZE (WIDTH)
+ */
+function jimmy_branding_shortcode_jimmy_branding( $atts ) {
+	$arr = shortcode_atts(
+		array( 'id' => 'jimmy-branding',
+			'name' => '',
+			'ratio' => 'false',
+			'width_pixels' => '300',
+			'width_percents' => '100',
+			'height_min' => '100',
+			'height_min_percents' => '10',
+			'height_max' => '200',
+			'height_max_percents' => '20',
+			'opener_color' => '#ff0',
+			'opener_width' => '28',
+			'opener_choice' => 'true',
+		),
+		$atts );
+
+	$id_content = $arr['id'] . '-content';
+	$id_opener = $arr['id'] . '-opener';
+
+	if ( 'TRUE' === $arr['ratio'] ) $arr['ratio'] = 'true';
+
+	if ( 'TRUE' === $arr['opener_choice'] ) $arr['opener_choice'] = 'true';
+
+	// To safety, return Error
+	if ( empty( $arr['name'] ) ) return "Error (jimmy-branding: 1100)";
+
+	// Get Content
+	$branding = get_page_by_path( $arr['name'], OBJECT, 'jbranding' );
+	if ( isset( $branding ) ) {
+		if ( ! empty( $branding->ID ) && $branding->post_status === "publish" && $branding->post_type === "jbranding" && empty( $branding->post_password ) ) {
+			$content_text = $branding->post_content;
+		} else {
+			return "Error (jimmy-codeviewer: 1102)";
+		}
+	} else {
+		return "Error (jimmy-branding: 1101)";
+	}
+
+	$return_str = '<div class="jimmy-branding-wrap">' . "\r\n";
+	$return_str .=	"\t" . '<div id="' . $id_content . '" style="width: ';
+
+	if ( 'true' === $arr['ratio'] ) {
+		$return_str .= $arr['width_percents'] . '%';
+	} else {
+		$return_str .= $arr['width_pixels'] . 'px';
+	}
+
+	$return_str .= ';height: ';
+
+	$return_str .= $arr['height_min'] . 'px';
+
+	$return_str .= ';" data-min="';
+
+	$return_str .= $arr['height_min'] . 'px"';
+
+	if ( 'true' === $arr['ratio'] ) {
+		$return_str .= ' data-minpercents="' . $arr['height_min_percents'] . '"';
+	}
+
+	$return_str .= ' data-max="';
+
+	$return_str .= $arr['height_max'] . 'px"';
+
+	if ( 'true' === $arr['ratio'] ) {
+		$return_str .= ' data-maxpercents="' . $arr['height_max_percents'] . '"';
+		$return_str .= ' data-widthpercents="' . $arr['width_percents']  . '"';
+	}
+
+	$return_str .= ' data-color="';
+
+	$return_str .= $arr['opener_color'] . '">' . "\r\n";
+
+	$return_str .=	"\t\t" . $content_text . "\r\n";
+
+	if ( 'true' === $arr['opener_choice'] ) {
+		$return_str .=	"\t\t" . '<div id="' . $id_opener . '" class="jimmy-branding-opener" style="font-size: ' . $arr['opener_width'] . 'px;border-top: 0.9em solid ' . $arr['opener_color'] . ';">' . "\r\n";
+		$return_str .=	"\t\t\t" . '<span class="screen-reader-text">' . "\r\n";
+		$return_str .=	"\t\t\t\t" . 'Expand Branding' . "\r\n";
+		$return_str .=	"\t\t\t" . '</span>' . "\r\n";
+		$return_str .= "\t\t" . '</div>' . "\r\n";
+	}
+
+	$return_str .= "\t" . '</div>' . "\r\n";
+
+	$return_str .= '</div><!-- .jimmy-branding-wrap -->' . "\r\n";
+
+	$return_str .= '<script type="text/javascript" defer>' . "\r\n";
+
+	$return_str .= "\t" . 'JIMMY_BRANDING.windowOpener( "' . $id_content .
+						'", "' . $id_opener .
+						'" );' . "\r\n";
+
+	$return_str .= '</script>' . "\r\n";
+
+	return $return_str;
+}
+
+if ( 'use' === get_option( 'jimmy_branding_option_shortcode_choice' ) ) {
+	add_shortcode( 'jimmy_branding', 'jimmy_branding_shortcode_jimmy_branding' );
 }
