@@ -320,7 +320,7 @@ Now On: <?php echo $branding_now; ?>
 
 ?>
 	<div class="jimmy-branding-admin-form-section">
-		<label unselectable="on">Width by <br />Ratio to Window:</label>
+		<label unselectable="on">Width by <br />Ratio to Parent:</label>
 		<input class="jimmy-branding-admin-input" type="number" name="jimmy_branding_width_percents_value" value="<?php echo $jimmy_branding_option_width_percents; ?>" max="100" min="1" unselectable="on" />
 		<label unselectable="on">percents</label>
 	</div>
@@ -628,7 +628,7 @@ JIMMY_BRANDING.windowOpener( "<?php echo $id_content; ?>", "<?php echo $id_opene
  * Make shortcode [jimmy_branding]
  * e.g. [jimmy_branding id="" name=""]
  * Make Stand Alone Jimmy Branding Window
- * Ratio is enabled. Be cautious that IT'S BY WHOLE WINDOW SIZE (WIDTH)
+ * Ratio is enabled. Be cautious that its width ratio depends on the parent element
  */
 function jimmy_branding_shortcode_jimmy_branding( $atts ) {
 	$arr = shortcode_atts(

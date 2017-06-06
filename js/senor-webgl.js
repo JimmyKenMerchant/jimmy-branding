@@ -54,28 +54,43 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		if ( typeof parameter.frontface !== "number" || parameter.frontface === null ) {
 			parameter.frontface = self.gl.CCW;
 		}
+		if ( typeof parameter.depthfunc !== "number" || parameter.depthfunc === null ) {
+			parameter.depthfunc = self.gl.LEQUAL;
+		}
+		if ( typeof parameter.enable_cullface !== "boolean" || parameter.enable_cullface === null ) {
+			parameter.enable_cullface = true;
+		}
+		if ( typeof parameter.enable_depthtest !== "boolean" || parameter.enable_depthtest === null ) {
+			parameter.enable_depthtest = true;
+		}
 
 		self.gl.viewport( 0, 0, parameter.canvas.width, parameter.canvas.height );
 
 		rgba = new Float32Array( parameter.color );
 
-		// About Culling
-		self.gl.cullFace( parameter.cullface );
-		self.gl.frontFace( parameter.frontface );
-
-		// About depth test
-		// Near things obscure far things
-		self.gl.depthFunc( self.gl.LEQUAL );
-
 		// Enable culling
-		self.gl.enable( self.gl.CULL_FACE );
+		if ( parameter.enable_cullface ) {
+			self.gl.cullFace( parameter.cullface );
+			self.gl.frontFace( parameter.frontface );
+			self.gl.enable( self.gl.CULL_FACE );
+		}
+
 		// Enable depth testing
-		self.gl.enable( self.gl.DEPTH_TEST );
+		if ( parameter.enable_depthtest ) {
+			self.gl.depthFunc( parameter.depthfunc );
+			self.gl.enable( self.gl.DEPTH_TEST );
+		}
+
 		// Set clear color to black, fully opaque
 		// For all transparent, use all zeros
 		self.gl.clearColor( rgba[0], rgba[1], rgba[2], rgba[3] );
-		// Clear the color as well as the depth buffer.
-		self.gl.clear( self.gl.COLOR_BUFFER_BIT | self.gl.DEPTH_BUFFER_BIT );
+
+		// Clear the color as well as the depth buffer
+		if ( parameter.stencil ) {
+			self.gl.clear( self.gl.COLOR_BUFFER_BIT | self.gl.DEPTH_BUFFER_BIT | self.gl.STENCIL_BUFFER_BIT );
+		} else {
+			self.gl.clear( self.gl.COLOR_BUFFER_BIT | self.gl.DEPTH_BUFFER_BIT );
+		}
 
 	};
 
@@ -227,13 +242,13 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 
 		// Scale
 		if ( typeof parameter.sx !== "number" || parameter.sx === null ) {
-			parameter.sx = 1;
+			parameter.sx = 1.0;
 		}
 		if ( typeof parameter.sy !== "number" || parameter.sy === null ) {
-			parameter.sy = 1;
+			parameter.sy = 1.0;
 		}
 		if ( typeof parameter.sz !== "number" || parameter.sz === null ) {
-			parameter.sz = 1;
+			parameter.sz = 1.0;
 		}
 
 		// Per milliseconds
@@ -1056,6 +1071,24 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 			this.splice( index, 1 );
 	};
 
+	// Z-sort ascending order to draw correctly on 2D (using gl_PointSize)
+	// You may use Array.prototype.sort() similar to this function
+	self.ArrayObject.prototype.zSort = function() {
+		var flag = true;
+		while( flag ) {
+			flag = false;
+			for ( var i = 0, a = this.length - 1; i < a; i++ ) {
+				if ( ( this[i].z + 1.0 ) / 2 - ( this[i + 1].z + 1.0 ) / 2 > 0 ) {
+					var swap = this[i];
+					this[i] = this[i + 1];
+					this[i + 1] = swap;
+					swap = null;
+					flag = true;
+				}
+			}
+		}
+	};
+
 	self.ArrayObject.prototype.free = function() {
 		// Free objects of Array inheritance
 		for ( var i = 0, a = this.length; i < a; i++ ) {
@@ -1537,7 +1570,10 @@ SENORUTL.crossProductVec3 = function( vec3_a, vec3_b ) {
 };
 
 
-/* Fundamental Matrix Funcs */
+/*
+ * Fundamental Matrix Funcs
+ * USE COLUMN MAJOR ORDER FOR REFERENCE! HARD CORDED ARRAY IS ROW ORDER THOUGH!
+ */
 
 SENORUTL.getAllZeroMat3 = function() {
 	var mat3 = [
@@ -1764,6 +1800,40 @@ SENORUTL.versorToMat4 = function( versor ) {
 	mat4[15] = 1.0;
 
 	return mat4;
+};
+
+
+/* 2D Functions */
+
+SENORUTL.scaleMat2 = function( sx, sy ) {
+	var mat2 = [ 1.0, 0.0, 0.0, 1.0 ];
+	mat2[0] = sx;
+	mat2[3] = sy;
+
+	return mat2;
+};
+
+
+SENORUTL.rotateMat2 = function( degree ) {
+	var radian = degree * SENORUTL.RAD_PER_ONE_DEG;
+	var mat2 = [];
+	mat2[0] = Math.cos( radian );
+	mat2[1] = Math.sin( radian );
+	mat2[2] = -Math.sin( radian );
+	mat2[3] = Math.cos( radian );
+
+	return mat2;
+};
+
+
+SENORUTL.skewMat2 = function( x_degree, y_degree ) {
+	var x_radian = x_degree * SENORUTL.RAD_PER_ONE_DEG;
+	var y_radian = y_degree * SENORUTL.RAD_PER_ONE_DEG;
+	var mat2 = [ 1.0, 0.0, 0.0, 1.0 ];
+	mat2[1] = Math.tan( y_radian );
+	mat2[2] = Math.tan( x_radian );
+
+	return mat2;
 };
 
 
