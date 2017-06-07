@@ -51,5 +51,10 @@ Several codes of 'SENOR', a WebGL library are derived from Mozilla Developer Net
 
 == Changelog ==
 
+= 0.9.2 Beta =
+* Improved 'SENOR' WebGL Library
+* Added WordPress Shortcode, 'jimmy_branding'
+: May 30, 2017
+
 = 0.9.1 Beta =
 * Released: May 30, 2017

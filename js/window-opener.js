@@ -32,6 +32,11 @@ JIMMY_BRANDING.windowOpener = function( id_content, id_opener ) {
 		}
 		sizeChange();
 
+		$( window ).bind('resize.wpevent_jimmy_branding', function( e ) {
+			sizeChange();
+			return true;
+		});
+
 		/*
 		 * Node.innerWidth of jQuery includes padding, equivalent to Node.clientWidth of JavaScript
 		 */
@@ -54,11 +59,6 @@ JIMMY_BRANDING.windowOpener = function( id_content, id_opener ) {
 			}
 		}
 
-		$( window ).bind('resize.wpevent_jimmy_branding', function( e ) {
-			sizeChange();
-			return true;
-		});
-
 		$( id_opener ).bind('click.wpevent_jimmy_branding', function( e ) {
 			ht = $( id_content ).css('height');
 			//console.log( ht );
@@ -77,6 +77,8 @@ JIMMY_BRANDING.windowOpener = function( id_content, id_opener ) {
 							});
 				is_open = false;
 			}
+			
+			return false;
 		});
 	})( jQuery );
 };

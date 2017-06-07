@@ -1059,26 +1059,36 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 	};
 
 	// Just only cut references from parent node
-	self.ArrayObject.prototype.delete = function( index ) {
+	self.ArrayObject.prototype.deleteLight = function( index ) {
 			this[index] = null;
 			this.splice( index, 1 );
 	};
 
 	// Considering Garbage Collection's movement (Null All)
-	self.ArrayObject.prototype.deleteNull = function( index ) {
+	self.ArrayObject.prototype.delete = function( index ) {
 			this[index].free;
 			this[index] = null;
 			this.splice( index, 1 );
 	};
 
+	self.ArrayObject.prototype.deleteAll = function() {
+		for ( var i = 0, a = this.length; i < a; i++ ) {
+			this.delete( this.length - 1 );
+		}
+	}
+
 	// Z-sort ascending order to draw correctly on 2D (using gl_PointSize)
 	// You may use Array.prototype.sort() similar to this function
-	self.ArrayObject.prototype.zSort = function() {
+	self.ArrayObject.prototype.zSort = function( offset ) {
+		// Considering the speed, check only undefined or so
+		if ( typeof offset === "undefined" ) {
+			offset = 1.0;
+		}
 		var flag = true;
 		while( flag ) {
 			flag = false;
 			for ( var i = 0, a = this.length - 1; i < a; i++ ) {
-				if ( ( this[i].z + 1.0 ) / 2 - ( this[i + 1].z + 1.0 ) / 2 > 0 ) {
+				if ( ( this[i].z + offset ) - ( this[i + 1].z + offset ) > 0 ) {
 					var swap = this[i];
 					this[i] = this[i + 1];
 					this[i + 1] = swap;
@@ -1554,19 +1564,19 @@ SENORUTL.normalizeVec3 = function( vec3_a ) {
 
 
 SENORUTL.dotProductVec3 = function( vec3_a, vec3_b ) {
-    var dot = vec3_a[0] * vec3_b[0] + vec3_a[1] * vec3_b[1] + vec3_a[2] * vec3_b[2];
+	var dot = vec3_a[0] * vec3_b[0] + vec3_a[1] * vec3_b[1] + vec3_a[2] * vec3_b[2];
 
-    return dot;
+	return dot;
 };
 
 
 SENORUTL.crossProductVec3 = function( vec3_a, vec3_b ) {
-    var x = vec3_a[1] * vec3_b[2] - vec3_a[2] * vec3_b[1];
-    var y = vec3_a[2] * vec3_b[0] - vec3_a[0] * vec3_b[2];
-    var z = vec3_a[0] * vec3_b[1] - vec3_a[1] * vec3_b[0];
-    var vec3 = [x, y, z];
+	var x = vec3_a[1] * vec3_b[2] - vec3_a[2] * vec3_b[1];
+	var y = vec3_a[2] * vec3_b[0] - vec3_a[0] * vec3_b[2];
+	var z = vec3_a[0] * vec3_b[1] - vec3_a[1] * vec3_b[0];
+	var vec3 = [x, y, z];
 
-    return vec3;
+	return vec3;
 };
 
 
@@ -1666,8 +1676,8 @@ SENORUTL.rotateXMat4 = function( degree ) {
 	var radian = degree * SENORUTL.RAD_PER_ONE_DEG;
 	var mat4 = SENORUTL.getIdentityMat4();
 	mat4[5] = Math.cos( radian );
-	mat4[9] = -Math.sin( radian );
 	mat4[6] = Math.sin( radian );
+	mat4[9] = -Math.sin( radian );
 	mat4[10] = Math.cos( radian );
 
 	return mat4;
@@ -1678,8 +1688,8 @@ SENORUTL.rotateYMat4 = function( degree ) {
 	var radian = degree * SENORUTL.RAD_PER_ONE_DEG;
 	var mat4 = SENORUTL.getIdentityMat4();
 	mat4[0] = Math.cos( radian );
-	mat4[8] = Math.sin( radian );
 	mat4[2] = -Math.sin( radian );
+	mat4[8] = Math.sin( radian );
 	mat4[10] = Math.cos( radian );
 
 	return mat4;
@@ -1690,8 +1700,8 @@ SENORUTL.rotateZMat4 = function( degree ) {
 	var radian = degree * SENORUTL.RAD_PER_ONE_DEG;
 	var mat4 = SENORUTL.getIdentityMat4();
 	mat4[0] = Math.cos( radian );
-	mat4[4] = -Math.sin( radian );
 	mat4[1] = Math.sin( radian );
+	mat4[4] = -Math.sin( radian );
 	mat4[5] = Math.cos( radian );
 
 	return mat4;
@@ -1711,8 +1721,8 @@ SENORUTL.perspectiveMat4 = function( fovy, aspect, near, far ) {
 	mat4[0] = sx;
 	mat4[5] = sy;
 	mat4[10] = sz;
-	mat4[14] = pz;
 	mat4[11] = -1.0;
+	mat4[14] = pz;
 
 	return mat4;
 };
@@ -1744,13 +1754,13 @@ SENORUTL.makeViewMat4 = function( camera_pos, target_pos, up ) {
 
 	var orient = SENORUTL.getIdentityMat4();
 	orient[0] = right[0];
-	orient[4] = right[1];
-	orient[8] = right[2];
 	orient[1] = real_up[0];
-	orient[5] = real_up[1];
-	orient[9] = real_up[2];
 	orient[2] = -forward[0];
+	orient[4] = right[1];
+	orient[5] = real_up[1];
 	orient[6] = -forward[1];
+	orient[8] = right[2];
+	orient[9] = real_up[2];
 	orient[10] = -forward[2];
 
 	var result = SENORUTL.multiplyMat4( camera_pos_mat4, orient );
@@ -2031,6 +2041,17 @@ SENORUTL.hitCheck = function( object_a, object_b ) {
 
 	return false;
 };
+
+
+/**
+ * Get Int Random
+ * Math.random returns 0 to 1 float
+ */
+SENORUTL.getRandomInt = function( min, max ) {
+	var result = ( Math.round( Math.random() * ( max - min ) ) ) + min;
+	return result;
+};
+
 
 /**
  * Get Float Random
