@@ -43,7 +43,9 @@ SENORUTL.attachDisplayOfJimmyBranding = function( parameter ) {
 	var ht_max_percents = 0;
 	var wd = 0;
 	var wd_percents = 0;
-	var grand_parent = parameter.display.parentNode.parentNode;
+	var choice = "";
+	var element = {};
+	var is_parent = true;
 	attachDisplay();
 	self.aspect = parameter.canvas.width / parameter.canvas.height;
 
@@ -64,30 +66,44 @@ SENORUTL.attachDisplayOfJimmyBranding = function( parameter ) {
 			ht_max_percents = ht_max_percents / 100;
 		}
 
+		if ( parameter.display.hasAttribute( 'data-choice' ) ) {
+			choice = parameter.display.getAttribute( 'data-choice' );
+			if ( 'parent' === choice ) {
+				element = parameter.display.parentNode.parentNode;
+			} else if ( 'window' === choice ) {
+				// Get Root to Exclude Scroll Bar Size
+				element = document.documentElement;
+				is_parent = false;
+			}
+		}
+
 		renderSizeChange();
 
 		// Considering multiple usages of this object
 		window.addEventListener( 'resize', function() {
 			if ( parameter.display.hasAttribute( 'data-widthpercents' ) ) {
-				wd = grand_parent.clientWidth * wd_percents;
+				wd = element.clientWidth * wd_percents;
 				wd = parseInt( wd );
+				parameter.canvas.width = wd;
+				parameter.canvas.style.width = parameter.canvas.width + 'px';
+				self.width = parameter.canvas.width;
 			}
-			parameter.canvas.width = wd;
-			parameter.canvas.style.width = parameter.canvas.width + 'px';
 
 			if ( parameter.display.hasAttribute( 'data-maxpercents' ) ) {
-				ht_max = grand_parent.clientWidth * wd_percents * ht_max_percents;
+				if ( is_parent ) {
+					ht_max = element.clientWidth * ht_max_percents;
+				} else {
+					ht_max = element.clientHeight * ht_max_percents;
+				}
 				ht_max = parseInt( ht_max );
+				parameter.canvas.height = ht_max;
+				parameter.canvas.style.height = parameter.canvas.height + 'px';
+				self.height = parameter.canvas.height;
 			}
-			parameter.canvas.height = ht_max;
-			parameter.canvas.style.height = parameter.canvas.height + 'px';
 
 			if ( parameter.context.gl ) {
 				parameter.context.gl.viewport( 0, 0, parameter.canvas.width, parameter.canvas.height );
 			}
-
-			self.width = parameter.canvas.width;
-			self.height = parameter.canvas.height;
 
 		}, false );
 
@@ -101,27 +117,29 @@ SENORUTL.attachDisplayOfJimmyBranding = function( parameter ) {
 	function renderSizeChange() {
 
 		if ( parameter.display.hasAttribute( 'data-widthpercents' ) ) {
-			wd = grand_parent.clientWidth * wd_percents;
+			wd = element.clientWidth * wd_percents;
 			wd = parseInt( wd );
 		}
 		parameter.canvas.width = wd;
 		parameter.canvas.style.width = parameter.canvas.width + 'px';
+		self.width = parameter.canvas.width;
 
 		if ( parameter.display.hasAttribute( 'data-maxpercents' ) ) {
-			ht_max = grand_parent.clientWidth * wd_percents * ht_max_percents;
+			if ( is_parent ) {
+				ht_max = element.clientWidth * ht_max_percents;
+			} else {
+				ht_max = element.clientHeight * ht_max_percents;
+			}
 			ht_max = parseInt( ht_max );
 		}
 		parameter.canvas.height = ht_max;
 		parameter.canvas.style.height = parameter.canvas.height + 'px';
+		self.height = parameter.canvas.height;
 
 		if ( parameter.context.gl ) {
 			parameter.context.gl.viewport( 0, 0, parameter.canvas.width, parameter.canvas.height );
 		}
 
-		self.width = parameter.canvas.width;
-		self.height = parameter.canvas.height;
-
-		return true;
 	}
 
 };

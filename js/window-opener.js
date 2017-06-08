@@ -12,24 +12,37 @@ JIMMY_BRANDING.windowOpener = function( id_content, id_opener ) {
 	id_opener = '#' + id_opener;
 	// Height Changer
 	(function( $ ) {
-		var grand_parent = $( id_content ).parent().parent();
+
 		var is_open = false;
-		var ht = $( id_content ).css('height');
-		var op_color = $( id_content ).data('color');
+
 		var ht_min = $( id_content ).data('min');
 		var ht_max = $( id_content ).data('max');
+		var op_color = $( id_content ).data('color');
+
+		var ht_min_percents;
+		var ht_max_percents
 		if ( $( id_content ).data('minpercents') ) {
-			var ht_min_percents = $( id_content ).data('minpercents');
+			ht_min_percents = $( id_content ).data('minpercents');
 			ht_min_percents = ht_min_percents / 100;
 		}
 		if ( $( id_content ).data('maxpercents') ) {
-			var ht_max_percents = $( id_content ).data('maxpercents');
+			ht_max_percents = $( id_content ).data('maxpercents');
 			ht_max_percents = ht_max_percents / 100;
 		}
-		if ( $( id_content ).data('widthpercents') ) {
-			var wd_percents = $( id_content ).data('widthpercents');
-			wd_percents = wd_percents / 100;
+
+		var choice;
+		var element;
+		var is_parent = true;
+		if ( $( id_content ).data('choice') ) {
+			choice = $( id_content ).data('choice');
+			if ( 'parent' === choice ) {
+				element = $( id_content ).parent().parent();
+			} else if ( 'window' === choice ) {
+				element = $( window );
+				is_parent = false;
+			}
 		}
+
 		sizeChange();
 
 		$( window ).bind('resize.wpevent_jimmy_branding', function( e ) {
@@ -37,31 +50,39 @@ JIMMY_BRANDING.windowOpener = function( id_content, id_opener ) {
 			return true;
 		});
 
-		/*
-		 * Node.innerWidth of jQuery includes padding, equivalent to Node.clientWidth of JavaScript
+		/**
+		 * Node.innerWidth() of jQuery includes padding, equivalent to Node.clientWidth of JavaScript
 		 */
 		function sizeChange() {
 			if ( $( id_content ).data('minpercents') ) {
-				ht_min = grand_parent.innerWidth() * ht_min_percents * wd_percents;
+				if ( is_parent ) {
+					ht_min = element.innerWidth() * ht_min_percents;
+				} else {
+					// Exclude Scroll Bar Size
+					ht_min = element.height() * ht_min_percents;
+				}
 				ht_min = parseInt( ht_min ) + 'px';
 				if ( ! is_open ) {
 					$( id_content ).css('height', ht_min );
-					ht = ht_min;
 				}
 			}
 			if ( $( id_content ).data('maxpercents') ) {
-				ht_max = grand_parent.innerWidth() * ht_max_percents * wd_percents;
+				if ( is_parent ) {
+					ht_max = element.innerWidth() * ht_max_percents;
+				} else {
+					// Exclude Scroll Bar Size
+					ht_max = element.height() * ht_max_percents;
+				}
 				ht_max = parseInt( ht_max ) + 'px';
 				if ( is_open ) {
 					$( id_content ).css('height', ht_max );
-					ht = ht_max;
 				}
 			}
 		}
 
+		// In jQuery, return false means preventDefault and stopPropagation
+		// In JavaScript, return false means only preventDefault or nothing
 		$( id_opener ).bind('click.wpevent_jimmy_branding', function( e ) {
-			ht = $( id_content ).css('height');
-			//console.log( ht );
 			if ( ! is_open ) {
 				$( id_content ).css('height', ht_max );
 				$( id_opener ).css({

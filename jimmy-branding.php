@@ -320,7 +320,7 @@ Now On: <?php echo $branding_now; ?>
 
 ?>
 	<div class="jimmy-branding-admin-form-section">
-		<label unselectable="on">Width by <br />Ratio to Parent:</label>
+		<label unselectable="on">Width by<br />Ratio:</label>
 		<input class="jimmy-branding-admin-input" type="number" name="jimmy_branding_width_percents_value" value="<?php echo $jimmy_branding_option_width_percents; ?>" max="100" min="1" unselectable="on" />
 		<label unselectable="on">percents</label>
 	</div>
@@ -354,7 +354,7 @@ Now On: <?php echo $branding_now; ?>
 
 ?>
 	<div class="jimmy-branding-admin-form-section">
-		<label unselectable="on">Minimum Height <br />by Ratio to Width:</label>
+		<label unselectable="on">Minimum Height<br />by Ratio:</label>
 		<input class="jimmy-branding-admin-input" type="number" name="jimmy_branding_height_min_percents_value" value="<?php echo $jimmy_branding_option_height_min_percents; ?>" max="400" min="1" unselectable="on" />
 		<label unselectable="on">percents</label>
 	</div>
@@ -388,7 +388,7 @@ Now On: <?php echo $branding_now; ?>
 
 ?>
 	<div class="jimmy-branding-admin-form-section">
-		<label unselectable="on">Maximum Height by Ratio to Width:</label>
+		<label unselectable="on">Maximum Height by Ratio:</label>
 		<input class="jimmy-branding-admin-input" type="number" name="jimmy_branding_height_max_percents_value" value="<?php echo $jimmy_branding_option_height_max_percents; ?>" max="400" min="1" unselectable="on" />
 		<label unselectable="on">percents</label>
 	</div>
@@ -408,8 +408,10 @@ Now On: <?php echo $branding_now; ?>
 		<label unselectable="on">Resolution by:</label>
 		<input class="jimmy-branding-admin-input" type="radio" name="jimmy_branding_res_choice_value" value="actual"<?php if ( 'actual' === $jimmy_branding_option_res_choice ) { echo ' checked="checked"'; }?> unselectable="on" />
 		<label unselectable="on">Pixels</label>
-		<input class="jimmy-branding-admin-input" type="radio" name="jimmy_branding_res_choice_value" value="ratio"<?php if ( 'ratio' === $jimmy_branding_option_res_choice ) { echo ' checked="checked"'; }?> unselectable="on" />
-		<label unselectable="on">Percents</label>
+		<input class="jimmy-branding-admin-input" type="radio" name="jimmy_branding_res_choice_value" value="ratio_p"<?php if ( 'ratio_p' === $jimmy_branding_option_res_choice ) { echo ' checked="checked"'; }?> unselectable="on" />
+		<label unselectable="on">Ratio by Parent Width</label>
+		<input class="jimmy-branding-admin-input" type="radio" name="jimmy_branding_res_choice_value" value="ratio_w"<?php if ( 'ratio_w' === $jimmy_branding_option_res_choice ) { echo ' checked="checked"'; }?> unselectable="on" />
+		<label unselectable="on">Ratio by Window Width & Height</label>
 	</div>
 <?php
 
@@ -524,11 +526,14 @@ Now On: <?php echo $branding_now; ?>
 }
 
 /**
- * Output on the regular page
- * Use this in your theme template to the branding output. Just like below
- *if ( function_exists( 'jimmy_branding_output' ) ) {
- *	jimmy_branding_output();
- *}
+ * Template tag to use in your theme
+ *
+ * Use below code in your theme template to the branding output. Just like below in PHP
+ *
+ *	if ( function_exists( 'jimmy_branding_output' ) ) {
+ *		jimmy_branding_output();
+ *	}
+ *
  */
 function jimmy_branding_output( $id_pre = 'jimmy-branding' ) {
 	$id_content = $id_pre . '-content';
@@ -565,7 +570,7 @@ function jimmy_branding_output( $id_pre = 'jimmy-branding' ) {
 	<div class="jimmy-branding-wrap">
 		<div id="<?php echo $id_content; ?>" style="width: <?php
 
-	if ( 'ratio' === $jimmy_branding_option_res_choice ) {
+	if ( 'actual' !== $jimmy_branding_option_res_choice ) {
 		echo $jimmy_branding_option_width_percents . '%';
 	} else {
 		echo $jimmy_branding_option_width . 'px';
@@ -581,7 +586,7 @@ function jimmy_branding_output( $id_pre = 'jimmy-branding' ) {
 
 ?>px"<?php
 
-	if ( 'ratio' === $jimmy_branding_option_res_choice ) {
+	if ( 'actual' !== $jimmy_branding_option_res_choice ) {
 		echo ' data-minpercents="' . $jimmy_branding_option_height_min_percents . '"';
 	}
 
@@ -591,7 +596,7 @@ function jimmy_branding_output( $id_pre = 'jimmy-branding' ) {
 
 ?>px"<?php
 
-	if ( 'ratio' === $jimmy_branding_option_res_choice ) {
+	if ( 'actual' !== $jimmy_branding_option_res_choice ) {
 		echo ' data-maxpercents="' . $jimmy_branding_option_height_max_percents . '"';
 		echo ' data-widthpercents="' . $jimmy_branding_option_width_percents . '"';
 	}
@@ -600,9 +605,20 @@ function jimmy_branding_output( $id_pre = 'jimmy-branding' ) {
 
 	echo $jimmy_branding_option_color_opener;
 
-?>">
-			<?php echo $branding_now . "\r\n"; ?>
+?>"<?php
+
+	if ( 'actual' !== $jimmy_branding_option_res_choice ) {
+		if ( 'ratio_p' === $jimmy_branding_option_res_choice ) {
+			echo ' data-choice="parent"';
+		} elseif ( 'ratio_w' === $jimmy_branding_option_res_choice ) {
+			echo ' data-choice="window"';
+		}
+	}
+
+?>>
 <?php
+	echo $branding_now . "\r\n";
+
 	if ( $jimmy_branding_option_opener_choice === 'display' ) :
 ?>
 			<div id="<?php echo $id_opener; ?>" class="jimmy-branding-opener" style="font-size: <?php echo $jimmy_branding_option_width_opener; ?>px;border-top: 0.9em solid <?php echo $jimmy_branding_option_color_opener; ?>;">
@@ -634,7 +650,7 @@ function jimmy_branding_shortcode_jimmy_branding( $atts ) {
 	$arr = shortcode_atts(
 		array( 'id' => 'jimmy-branding',
 			'name' => '',
-			'ratio' => 'false',
+			'ratio' => 'false', // false, parent, window
 			'width_pixels' => '300',
 			'width_percents' => '100',
 			'height_min' => '100',
@@ -650,7 +666,7 @@ function jimmy_branding_shortcode_jimmy_branding( $atts ) {
 	$id_content = $arr['id'] . '-content';
 	$id_opener = $arr['id'] . '-opener';
 
-	if ( 'TRUE' === $arr['ratio'] ) $arr['ratio'] = 'true';
+	if ( 'FALSE' === $arr['ratio'] ) $arr['ratio'] = 'false';
 
 	if ( 'TRUE' === $arr['opener_choice'] ) $arr['opener_choice'] = 'true';
 
@@ -672,7 +688,7 @@ function jimmy_branding_shortcode_jimmy_branding( $atts ) {
 	$return_str = '<div class="jimmy-branding-wrap">' . "\r\n";
 	$return_str .=	"\t" . '<div id="' . $id_content . '" style="width: ';
 
-	if ( 'true' === $arr['ratio'] ) {
+	if ( 'false' !== $arr['ratio'] ) {
 		$return_str .= $arr['width_percents'] . '%';
 	} else {
 		$return_str .= $arr['width_pixels'] . 'px';
@@ -686,7 +702,7 @@ function jimmy_branding_shortcode_jimmy_branding( $atts ) {
 
 	$return_str .= $arr['height_min'] . 'px"';
 
-	if ( 'true' === $arr['ratio'] ) {
+	if ( 'false' !== $arr['ratio'] ) {
 		$return_str .= ' data-minpercents="' . $arr['height_min_percents'] . '"';
 	}
 
@@ -694,16 +710,27 @@ function jimmy_branding_shortcode_jimmy_branding( $atts ) {
 
 	$return_str .= $arr['height_max'] . 'px"';
 
-	if ( 'true' === $arr['ratio'] ) {
+	if ( 'false' !== $arr['ratio'] ) {
 		$return_str .= ' data-maxpercents="' . $arr['height_max_percents'] . '"';
 		$return_str .= ' data-widthpercents="' . $arr['width_percents']  . '"';
 	}
 
 	$return_str .= ' data-color="';
 
-	$return_str .= $arr['opener_color'] . '">' . "\r\n";
+	$return_str .= $arr['opener_color'] . '"';
 
-	$return_str .=	"\t\t" . $content_text . "\r\n";
+	if ( 'false' !== $arr['ratio'] ) {
+		// If wrong statement, it will be "parent" forcedly
+		if ( 'window' === $arr['ratio'] ) {
+			$return_str .= ' data-choice="window"';
+		} else {
+			$return_str .= ' data-choice="parent"';
+		}
+	}
+
+	$return_str .= '>' . "\r\n";
+
+	$return_str .= $content_text . "\r\n";
 
 	if ( 'true' === $arr['opener_choice'] ) {
 		$return_str .=	"\t\t" . '<div id="' . $id_opener . '" class="jimmy-branding-opener" style="font-size: ' . $arr['opener_width'] . 'px;border-top: 0.9em solid ' . $arr['opener_color'] . ';">' . "\r\n";
