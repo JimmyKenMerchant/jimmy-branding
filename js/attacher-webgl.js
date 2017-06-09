@@ -27,6 +27,7 @@ SENORUTL.attachDisplayOfJimmyBranding = function( parameter ) {
 	}
 
 	if ( typeof parameter.canvas !== "object" || parameter.canvas === null ) {
+		// In constructor, return means stop constructing
 		return;
 	}
 	if ( typeof parameter.display !== "object" || parameter.display === null ) {
@@ -39,12 +40,13 @@ SENORUTL.attachDisplayOfJimmyBranding = function( parameter ) {
 		return;
 	}
 
-	var ht_max = 0;
-	var ht_max_percents = 0;
-	var wd = 0;
-	var wd_percents = 0;
-	var choice = "";
-	var element = {};
+	// No Need of Making Empty Object to Load Memory
+	var ht_max;
+	var ht_max_percents;
+	var wd;
+	var wd_percents;
+	var choice;
+	var element;
 	var is_parent = true;
 	attachDisplay();
 	self.aspect = parameter.canvas.width / parameter.canvas.height;
@@ -69,7 +71,7 @@ SENORUTL.attachDisplayOfJimmyBranding = function( parameter ) {
 		if ( parameter.display.hasAttribute( 'data-choice' ) ) {
 			choice = parameter.display.getAttribute( 'data-choice' );
 			if ( 'parent' === choice ) {
-				element = parameter.display.parentNode.parentNode;
+				element = parameter.display.parentNode;
 			} else if ( 'window' === choice ) {
 				// Get Root to Exclude Scroll Bar Size
 				element = document.documentElement;
@@ -107,7 +109,6 @@ SENORUTL.attachDisplayOfJimmyBranding = function( parameter ) {
 
 		}, false );
 
-		return true;
 	}
 
 

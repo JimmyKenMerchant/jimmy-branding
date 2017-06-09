@@ -5,9 +5,10 @@ Jimmy Branding
 .jimmy-branding-wrap {
 	width: 100%;
 	text-align: center;
+	overflow: hidden;
 }
 
-.jimmy-branding-wrap > div {
+.jimmy-branding-content {
 	display: inline-block;
 	vertical-align: top;
 	position: relative;

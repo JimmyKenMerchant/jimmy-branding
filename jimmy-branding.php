@@ -5,7 +5,7 @@ Plugin URI: http://electronics.jimmykenmerchant.com/jimmy-branding/
 Description: Flexible Branding Banner with WebGL
 Author: Kenta Ishii
 Author URI: http://electronics.jimmykenmerchant.com
-Version: 0.9.2 Beta
+Version: 0.9.3 Beta
 Text Domain: jimmy-branding
 Domain Path: /languages
 License: GPL2 or Later
@@ -568,7 +568,7 @@ function jimmy_branding_output( $id_pre = 'jimmy-branding' ) {
 	}
 ?>
 	<div class="jimmy-branding-wrap">
-		<div id="<?php echo $id_content; ?>" style="width: <?php
+		<div id="<?php echo $id_content; ?>" class="jimmy-branding-content" style="width: <?php
 
 	if ( 'actual' !== $jimmy_branding_option_res_choice ) {
 		echo $jimmy_branding_option_width_percents . '%';
@@ -686,7 +686,7 @@ function jimmy_branding_shortcode_jimmy_branding( $atts ) {
 	}
 
 	$return_str = '<div class="jimmy-branding-wrap">' . "\r\n";
-	$return_str .=	"\t" . '<div id="' . $id_content . '" style="width: ';
+	$return_str .=	"\t" . '<div id="' . $id_content . '" class="jimmy-branding-content" style="width: ';
 
 	if ( 'false' !== $arr['ratio'] ) {
 		$return_str .= $arr['width_percents'] . '%';

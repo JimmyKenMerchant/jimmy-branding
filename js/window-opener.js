@@ -20,7 +20,7 @@ JIMMY_BRANDING.windowOpener = function( id_content, id_opener ) {
 		var op_color = $( id_content ).data('color');
 
 		var ht_min_percents;
-		var ht_max_percents
+		var ht_max_percents;
 		if ( $( id_content ).data('minpercents') ) {
 			ht_min_percents = $( id_content ).data('minpercents');
 			ht_min_percents = ht_min_percents / 100;
@@ -36,7 +36,7 @@ JIMMY_BRANDING.windowOpener = function( id_content, id_opener ) {
 		if ( $( id_content ).data('choice') ) {
 			choice = $( id_content ).data('choice');
 			if ( 'parent' === choice ) {
-				element = $( id_content ).parent().parent();
+				element = $( id_content ).parent();
 			} else if ( 'window' === choice ) {
 				element = $( window );
 				is_parent = false;
@@ -47,7 +47,8 @@ JIMMY_BRANDING.windowOpener = function( id_content, id_opener ) {
 
 		$( window ).bind('resize.wpevent_jimmy_branding', function( e ) {
 			sizeChange();
-			return true;
+			// In jQuery and JavaScript, return true in event listener means nothing, unlike return false
+			//return true;
 		});
 
 		/**

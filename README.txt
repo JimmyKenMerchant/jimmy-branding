@@ -6,7 +6,7 @@ Tags: branding, brand, webgl, 3d
 Author: Kenta Ishii
 Author URI: http://electronics.jimmykenmerchant.com
 Requires at least: 4.7
-Tested up to: 4.7
+Tested up to: 4.8
 Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -23,10 +23,14 @@ Size-flexible Banner for Your Website Branding.
 
 = Usage =
 * Copy and paste below code on your theme page, e.g., index.php.
-if ( function_exists( 'jimmy_branding_output' ) ) {
-	jimmy_branding_output();
-}
+<?php
+	if ( function_exists( 'jimmy_branding_output' ) ) {
+		jimmy_branding_output();
+	}
+?>
 * Make your branding HTML code on 'jBrandings' menu, then select your branding on 'Select' sub menu.
+
+Usage Samples are on http://electronics.jimmykenmerchant.com/jimmy-branding/ please check out.
 
 == Installation ==
 
@@ -50,6 +54,10 @@ GNU General Public License for more details.
 Several codes of 'SENOR', a WebGL library are derived from Mozilla Developer Network (https://github.com/mdn/webgl-examples). The license is under Creative Commons Zero v1.0 Universal (https://github.com/mdn/webgl-examples/blob/gh-pages/LICENSE). This license is compatible with GPLv2 or later.
 
 == Changelog ==
+
+= 0.9.3 Beta =
+* Confirmed Compatibility with WordPress Version 4.8 
+: June 9, 2017
 
 = 0.9.2 Beta =
 * Improved 'SENOR' WebGL Library
