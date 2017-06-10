@@ -81,8 +81,8 @@ function jimmy_branding_roles_customize() {
 	add_option( 'jimmy_branding_option_height_max', 200 );
 	add_option( 'jimmy_branding_option_height_max_percents', 20 );
 	add_option( 'jimmy_branding_option_res_choice', esc_html( 'actual' ) );
-	add_option( 'jimmy_branding_option_color_opener', esc_html( 'rgba(127, 127, 127, 0.4)' ) );
-	add_option( 'jimmy_branding_option_width_opener', 28 );
+	add_option( 'jimmy_branding_option_color_opener', esc_html( 'rgba(255, 255, 0, 0.6)' ) );
+	add_option( 'jimmy_branding_option_width_opener', 34 );
 	add_option( 'jimmy_branding_option_opener_choice', esc_html( 'display' ) );
 	add_option( 'jimmy_branding_option_webgl_choice', esc_html( 'none' ) );
 	add_option( 'jimmy_branding_option_shortcode_choice', esc_html( 'none' ) );
@@ -657,8 +657,8 @@ function jimmy_branding_shortcode_jimmy_branding( $atts ) {
 			'height_min_percents' => '10',
 			'height_max' => '200',
 			'height_max_percents' => '20',
-			'opener_color' => '#ff0',
-			'opener_width' => '28',
+			'opener_color' => 'rgba(255, 255, 0, 0.6)',
+			'opener_width' => '34',
 			'opener_choice' => 'true',
 		),
 		$atts );
