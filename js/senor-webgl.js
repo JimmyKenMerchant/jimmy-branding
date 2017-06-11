@@ -337,7 +337,8 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 			parameter.z_radius = 0.0;
 		}
 
-		// Multi (Two) Dimentional Array, e.g Store Array Number and Sequence Number in Use on First
+		// Multi (Two) Dimentional Array
+		// e.g. Store Array Number, Sequence Number and Passed Time on First Array
 		if ( typeof parameter.sequence !== "object" || parameter.sequence === null ) {
 			parameter.sequence = [];
 		}
@@ -1816,7 +1817,9 @@ SENORUTL.versorToMat4 = function( versor ) {
 /* 2D Functions */
 
 SENORUTL.scaleMat2 = function( sx, sy ) {
-	var mat2 = [ 1.0, 0.0, 0.0, 1.0 ];
+	var mat2 = [
+		1.0, 0.0,
+		0.0, 1.0];
 	mat2[0] = sx;
 	mat2[3] = sy;
 
@@ -1839,7 +1842,9 @@ SENORUTL.rotateMat2 = function( degree ) {
 SENORUTL.skewMat2 = function( x_degree, y_degree ) {
 	var x_radian = x_degree * SENORUTL.RAD_PER_ONE_DEG;
 	var y_radian = y_degree * SENORUTL.RAD_PER_ONE_DEG;
-	var mat2 = [ 1.0, 0.0, 0.0, 1.0 ];
+	var mat2 = [
+		1.0, 0.0,
+		0.0, 1.0];
 	mat2[1] = Math.tan( y_radian );
 	mat2[2] = Math.tan( x_radian );
 
@@ -1848,7 +1853,7 @@ SENORUTL.skewMat2 = function( x_degree, y_degree ) {
 
 
 /**
- * Convert raw data of Wavefront .obj file to object
+ * Convert raw data of Wavefront .obj file in DOM Element to vertices object
  */
 SENORUTL.attachObjRaw = function( id ) {
 	var strings = document.getElementById( id );
@@ -1955,7 +1960,31 @@ SENORUTL.attachObjRaw = function( id ) {
 
 
 /**
- * Object to store 3d date from DOM Element
+ * Convert raw data of JSON in DOM Element to vertices object
+ */
+SENORUTL.attachJSONRaw = function( id ) {
+	var return_object = document.getElementById( id );
+	return_object = JSON.parse( return_object.textContent );
+
+	return return_object;
+}
+
+
+/**
+ * Convert vertices object to raw data of JSON
+ */
+SENORUTL.detachJSONRaw = function( subject ) {
+	if ( typeof subject !== "object" || subject === null ) {
+		return false;
+	}
+	var return_string = JSON.stringify( subject );
+
+	return return_string;
+}
+
+
+/**
+ * Make Object to store 3d date from JSON raw data in DOM Element
  */
 SENORUTL.object3DFromElement = function( id ) {
 	var object = document.getElementById( id );
@@ -1967,7 +1996,7 @@ SENORUTL.object3DFromElement = function( id ) {
 
 
 /**
- * Object to store 3d date
+ * Make Object to store 3d date from vertices object made by 'attach.+Raw' functions
  */
 SENORUTL.object3D = function( object ) {
 	var return_object = new Object();

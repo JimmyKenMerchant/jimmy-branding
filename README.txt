@@ -27,6 +27,15 @@ Size-flexible Banner for Your Website Branding. Template Tag and Shortcode. 'SEN
 ** Original WebGL library, 'SENOR'
 ** 'SENOR' (actually, 'SENORWEBGL1', 'SENORWEBGL2' and 'SENORUTL') is an original WebGL library of Kenta Ishii licensed under GPLv2 or later. This Library aims to be "System of Whole Objective Oriented Structure" to make and transmit 3D images in/between your web sites and servers. This system is unique because whole processes depend on objective oriented structure. By doing so, engineers to participate in projects can be able to build systems of 3D images easier than inconsistent structures. 'SENOTRWEBGL1' is a wrapper of WebGL1.0 context. 'SENORWEBGL2' is a wrapper of WebGL2.0 context (now on reserved). 'SENORUTL' is utilities to make 3D images. 'SENOR' also aims to consider compatibility to code between 'SENORWEBGL1', WebGL1.0 context and 'SENORWEBGL2', WebGL2.0 context. Now so call "The Same Coding Rarely Except Extension". By wrapping whole context with each 'canvas' HTML tag, 'SENOR' aims usage of multiple contexts on the same page of your website. **
 
+* 'SENOR' Library System Chart
+
+                 ---------------------     ---------------------  User          ---------------------
+    From Server  |   1. Raw Data     |     |   2. Objectify    |  interaction   |   3. Use Object   |
+  -------------> | Vertices,         | --> | Through           | -------------> | In Applications,  |
+  <------------- | Coordinates, etc. | <-- | JavaScript Object | <------------- | Game, CAI,        |
+    To Server    |   Via JSON, etc.  |     |    Via 'SENOR'    |                | Monitor, AND MORE |
+                 ---------------------     ---------------------                ---------------------
+
 = Usage =
 ** Template Tag, jimmy_branding_output()
 * Copy and paste below code and the template tag on your theme, e.g., index.php.
