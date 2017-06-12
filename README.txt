@@ -25,16 +25,47 @@ Size-flexible Banner for Your Website Branding. Template Tag and Shortcode. 'SEN
 * Status and Content flexible just the same as the template tag.
 
 ** Original WebGL library, 'SENOR'
-** 'SENOR' (actually, 'SENORWEBGL1', 'SENORWEBGL2' and 'SENORUTL') is an original WebGL library of Kenta Ishii licensed under GPLv2 or later. This Library aims to be "System of Whole Objective Oriented Structure" to make and transmit 3D images in/between your web sites and servers. This system is unique because whole processes depend on objective oriented structure. By doing so, engineers to participate in projects can be able to build systems of 3D images easier than inconsistent structures. 'SENOTRWEBGL1' is a wrapper of WebGL1.0 context. 'SENORWEBGL2' is a wrapper of WebGL2.0 context (now on reserved). 'SENORUTL' is utilities to make 3D images. 'SENOR' also aims to consider compatibility to code between 'SENORWEBGL1', WebGL1.0 context and 'SENORWEBGL2', WebGL2.0 context. Now so call "The Same Coding Rarely Except Extension". By wrapping whole context with each 'canvas' HTML tag, 'SENOR' aims usage of multiple contexts on the same page of your website. **
+** 'SENOR' (exactly, 'SENOR' is the naming union of 'SENORWEBGL1', 'SENORWEBGL2' and 'SENORUTL') is an client side WebGL library of Kenta Ishii licensed under GPLv2 or later. This Library aims to be "System of Whole Objective Oriented Structure" to make/transmit data of 3D-graphic (Three Dimensional Graphic) in/between client computers and servers. This system is unique because whole processes depend on objective oriented structure. By doing so, engineers to participate in 3D-graphic projects can be able to build systems easier than inconsistent structures. 'SENOTRWEBGL1' is a wrapper of WebGL1.0 context. 'SENORWEBGL2' is a wrapper of WebGL2.0 context ('SENORWEBGL2' is now on reserved). 'SENORUTL' is utilities to make 3D-graphic. 'SENOR' also aims to consider compatibility to code between 'SENORWEBGL1', WebGL1.0 context and 'SENORWEBGL2', WebGL2.0 context. It's so called "The Same Coding Rarely Except Extension". By wrapping whole context with each 'canvas' HTML tag, 'SENOR' aims usage of multiple contexts on the same page of your website. **
 
-* 'SENOR' Library System Chart
+* 'SENOR' Library System Chart ('SENOR' is using a three-phases procedure as below)
 
-                 ---------------------     ---------------------  User          ---------------------
-    From Server  |   1. Raw Data     |     |   2. Objectify    |  interaction   |   3. Use Object   |
-  -------------> | Vertices,         | --> | Through           | -------------> | In Applications,  |
-  <------------- | Coordinates, etc. | <-- | JavaScript Object | <------------- | Game, CAI,        |
-    To Server    |   Via JSON, etc.  |     |    Via 'SENOR'    |                | Monitor, AND MORE |
-                 ---------------------     ---------------------                ---------------------
+         Internet (TCP/IP Protocol ,etc.)
+           | ^
+From       | | To Server
+Server     | | From
+To Client  | | Client
+           v |
+-------------------------
+|     1. Raw Data       |
+| Vertices, Coordinates,|
+| Phong Parameter, etc. |
+|  On JSON (JavaScript  |
+| Object Notation), etc.|
+-------------------------
+           | ^
+JavaScript | |JavaScript
+Function to| |Function to
+Ojbectiry  | |Raw Data
+           v |
+-------------------------
+|     2. Objectify      |
+| Object Structuring    |
+| Vertices, Coordinates,|
+| Phong Prameter, etc.  |
+|  Via 'SENOR' Library  |
+-------------------------
+           | ^
+Output     | | Input   
+by         | | by User
+JavaScript | | Communi-
+Program    v | cation
+-------------------------
+|     3. Use Object     |
+| In Applications,      |
+| Game, CAI (Computer-  |
+| Assisted Instruction) |
+| CAD, Monitor, etc.    |
+-------------------------
 
 = Usage =
 ** Template Tag, jimmy_branding_output()
@@ -91,6 +122,11 @@ GNU General Public License for more details.
 Several codes of 'SENOR', a WebGL library are derived from Mozilla Developer Network (https://github.com/mdn/webgl-examples). The license is under Creative Commons Zero v1.0 Universal (https://github.com/mdn/webgl-examples/blob/gh-pages/LICENSE). This license is compatible with GPLv2 or later.
 
 == Changelog ==
+
+= 0.9.4 Beta =
+* Made Texture Array Two dimention
+* Made functions for Cube Texture
+: June 12, 2017
 
 = 0.9.3 Beta =
 * Confirmed Compatibility with WordPress Version 4.8
