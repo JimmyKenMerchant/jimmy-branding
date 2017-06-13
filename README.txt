@@ -16,27 +16,22 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Size-flexible Banner for Your Website Branding. Template Tag and Shortcode. 'SENOR' WebGL Library, "System of Whole Objective Oriented Structure". Change Height Size by Yellow Triangle on the Center Bottom (Color Changeable).
 
 = Futures =
-** Template Tag, jimmy_branding_output()
-* Custom content (post) type, "jBranding".
-* Status and Content Changer of Branding Banner, Opener (Triangle on the Center Bottom).
-
-** Shortcode, [jimmy_branding]
-* For use of "jBranding" content in your posts.
-* Status and Content flexible just the same as the template tag.
-
-** Original WebGL library, 'SENOR'
-** 'SENOR' (exactly, 'SENOR' is the naming union of 'SENORWEBGL1', 'SENORWEBGL2' and 'SENORUTL') is an client side WebGL library of Kenta Ishii licensed under GPLv2 or later. This Library aims to be "System of Whole Objective Oriented Structure" to make/transmit data of 3D-graphic (Three Dimensional Graphic) in/between client computers and servers. This system is unique because whole processes depend on objective oriented structure. By doing so, engineers to participate in 3D-graphic projects can be able to build systems easier than inconsistent structures. 'SENOTRWEBGL1' is a wrapper of WebGL1.0 context. 'SENORWEBGL2' is a wrapper of WebGL2.0 context ('SENORWEBGL2' is now on reserved). 'SENORUTL' is utilities to make 3D-graphic. 'SENOR' also aims to consider compatibility to code between 'SENORWEBGL1', WebGL1.0 context and 'SENORWEBGL2', WebGL2.0 context. It's so called "The Same Coding Rarely Except Extension". By wrapping whole context with each 'canvas' HTML tag, 'SENOR' aims usage of multiple contexts on the same page of your website. **
-
+**Template Tag, jimmy_branding_output**
+**'jBrandings' Admin Menu**
+**Shortcode, [jimmy_branding]**
+**Original WebGL library, 'SENOR'**
+**'SENOR' (exactly, 'SENOR' is the naming union of 'SENORWEBGL1', 'SENORWEBGL2' and 'SENORUTL') is an client side WebGL library of Kenta Ishii licensed under GPLv2 or later. This Library aims to be "System of Whole Objective Oriented Structure" to make/transmit data of 3D-graphic (Three Dimensional Graphic) in/between client computers and servers. This system is unique because whole processes depend on objective oriented structure. By doing so, engineers to participate in 3D-graphic projects can be able to build systems easier than inconsistent structures. 'SENOTRWEBGL1' is a wrapper of WebGL1.0 context. 'SENORWEBGL2' is a wrapper of WebGL2.0 context ('SENORWEBGL2' is now on reserved). 'SENORUTL' is utilities to make 3D-graphic. 'SENOR' also aims to consider compatibility to code between 'SENORWEBGL1', WebGL1.0 context and 'SENORWEBGL2', WebGL2.0 context. It's so called "The Same Coding Rarely Except Extension". By wrapping whole context with each 'canvas' HTML tag, 'SENOR' aims usage of multiple contexts on the same page of your website.**
 * 'SENOR' Library System Chart ('SENOR' is using a three-phases procedure as below)
 
-         Internet (TCP/IP Protocol ,etc.)
+         Internet
+ (TCP/IP Protocol ,etc.)
            | ^
 From       | | To Server
 Server     | | From
 To Client  | | Client
            v |
 -------------------------
-|     1. Raw Data       |
+|     (1) Raw Data      |
 | Vertices, Coordinates,|
 | Phong Parameter, etc. |
 |  On JSON (JavaScript  |
@@ -48,7 +43,7 @@ Function to| |Function to
 Ojbectiry  | |Raw Data
            v |
 -------------------------
-|     2. Objectify      |
+|     (2) Objectify     |
 | Object Structuring    |
 | Vertices, Coordinates,|
 | Phong Prameter, etc.  |
@@ -60,7 +55,7 @@ by         | | by User
 JavaScript | | Communi-
 Program    v | cation
 -------------------------
-|     3. Use Object     |
+|     (3) Use Object    |
 | In Applications,      |
 | Game, CAI (Computer-  |
 | Assisted Instruction) |
@@ -68,7 +63,7 @@ Program    v | cation
 -------------------------
 
 = Usage =
-** Template Tag, jimmy_branding_output()
+**Template Tag, jimmy_branding_output**
 * Copy and paste below code and the template tag on your theme, e.g., index.php.
 <?php
 	if ( function_exists( 'jimmy_branding_output' ) ) {
@@ -78,13 +73,13 @@ Program    v | cation
 ?>
 * Make your branding HTML code on 'jBrandings' menu.
 * Select your content and on 'Select' sub menu.
-* Custom banner and opener size on 'Select' sub menu.
+* Customize banner and opener (Triangle on the Center Bottom) size on 'Select' sub menu.
 
-** Shortcode, [jimmy_branding]
+**Shortcode, [jimmy_branding]**
 * On 'Select' sub menu, check 'SENOR WebGL Library' to 'Stand Alone' and 'Shortcode Usage' to 'Use'.
 * On your post, use shortcode [jimmy_branding] with several arguments. 'name' must be needed.
 
-** Arguments of the WordPress shortcode, [jimmy_branding] 
+**Arguments of the WordPress shortcode, [jimmy_branding]**
 * 'id' - (default: 'jimmy-branding')
 * 'name' - assign slug name of your content (default: '') must needed
 * 'ratio' - 'false' is using pixels, 'parent' is using width parent element's width, 'window' is using window's width and height to make the resolution of the template (default: 'false')
@@ -103,6 +98,12 @@ Usage Samples are on http://electronics.jimmykenmerchant.com/jimmy-branding/ ple
 == Installation ==
 
 Now on Beta Testing. If you want, download and test this plugin.
+
+== Frequently Asked Questions ==
+
+= Why does 'SENOR' have no function to make texture by "Image" object or "img" tag directly? =
+
+"Image" object and "img" tag have the process to load each image. This loading process is a little tricky as opposed to the native usage of OpenGL. If the image has not been loaded yet, making texture fails. To hide this failure, 'SENOR' has the function to make texture by URL address or pixels data. In case of making texture by 'video' tag, you need to draw the video image to a 2D canvas by CanvasRenderingContext2D.drawImage(), then make RGB (per 1 byte) pixels data with this canvas by CanvasRenderingContext2D.getImageData(). The function, getImageData, is restricted by Same-Origin Policy or CORS (Cross-Origin Resource Sharing). Put 'crossorigin' attribute to the 'video' tag if you need. Plus, make sure to play and control the video by functions, and iterate the process of drawImage, getImageData and making/update texture.
 
 == Copyright ==
 

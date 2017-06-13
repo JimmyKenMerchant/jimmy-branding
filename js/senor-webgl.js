@@ -1300,8 +1300,130 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 	 */
 
 	// Making Cube Mapped Texture for Sky Box, etc.
-	// CAUTION IT'S NOT SATISFIED TO HIDE ERRORS
 	self.textureCubeMapByPath = function( parameter ) {
+		if ( typeof parameter !== "object" || parameter === null ) {
+			return false;
+		}
+
+		if ( typeof parameter.positive_x !== "string" || parameter.positive_x === null ) {
+			return false;
+		}
+		if ( typeof parameter.negative_x !== "string" || parameter.negative_x === null ) {
+			return false;
+		}
+		if ( typeof parameter.positive_y !== "string" || parameter.positive_y === null ) {
+			return false;
+		}
+		if ( typeof parameter.negative_y !== "string" || parameter.negative_y === null ) {
+			return false;
+		}
+		if ( typeof parameter.positive_z !== "string" || parameter.positive_z === null ) {
+			return false;
+		}
+		if ( typeof parameter.negative_z !== "string" || parameter.negative_z === null ) {
+			return false;
+		}
+		if ( typeof parameter.format !== "number" || parameter.format === null ) {
+			parameter.format = self.gl.RGBA;
+		}
+		if ( typeof parameter.type !== "number" || parameter.type === null ) {
+			parameter.type = self.gl.UNSIGNED_BYTE;
+		}
+		if ( typeof parameter.mag_filter !== "number" || parameter.mag_filter === null ) {
+			parameter.mag_filter = self.gl.LINEAR;
+		}
+		if ( typeof parameter.min_filter !== "number" || parameter.min_filter === null ) {
+			parameter.min_filter = self.gl.LINEAR_MIPMAP_NEAREST;
+		}
+		if ( typeof parameter.wrap_s !== "number" || parameter.wrap_s === null ) {
+			parameter.wrap_s = self.gl.CLAMP_TO_EDGE;
+		}
+		if ( typeof parameter.wrap_t !== "number" || parameter.wrap_t === null ) {
+			parameter.wrap_t = self.gl.CLAMP_TO_EDGE;
+		}
+		if ( typeof parameter.use_mipmap !== "boolean" || parameter.use_mipmap === null ) {
+			parameter.use_mipmap = true;
+		}
+
+		if ( typeof parameter.texture !== "object" || parameter.texture === null ) {
+			parameter.texture = self.gl.createTexture();
+		}
+
+		// Positive X
+		var positive_x = new Image();
+		positive_x.onload = function() {
+			attachTexture( parameter );
+		};
+		positive_x.src = parameter.positive_x;
+
+		// Negative X
+		var negative_x = new Image();
+		negative_x.onload = function() {
+			attachTexture( parameter );
+		};
+		negative_x.src = parameter.negative_x;
+
+		// Positive Y
+		var positive_y = new Image();
+		positive_y.onload = function() {
+			attachTexture( parameter );
+		};
+		positive_y.src = parameter.positive_y;
+
+		// Negative Y
+		var negative_y = new Image();
+		negative_y.onload = function() {
+			attachTexture( parameter );
+		};
+		negative_y.src = parameter.negative_y;
+
+		// Positive Z
+		var positive_z = new Image();
+		positive_z.onload = function() {
+			attachTexture( parameter );
+		};
+		positive_z.src = parameter.positive_z;
+
+		// Negative Z
+		var negative_z = new Image();
+		negative_z.onload = function() {
+			attachTexture( parameter );
+		};
+		negative_z.src = parameter.negative_z;
+
+		var load_counter = 0;
+
+		// Private Function
+		// No need of return because texture is already created
+		var attachTexture = function( parameter ) {
+			load_counter++;
+			if ( load_counter === 6 ) {
+				self.gl.bindTexture( self.gl.TEXTURE_CUBE_MAP, parameter.texture );
+				self.gl.texImage2D( self.gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, parameter.format, parameter.format, parameter.type, positive_x );
+				self.gl.texImage2D( self.gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, parameter.format, parameter.format, parameter.type, negative_x );
+				self.gl.texImage2D( self.gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, parameter.format, parameter.format, parameter.type, positive_y );
+				self.gl.texImage2D( self.gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, parameter.format, parameter.format, parameter.type, negative_y );
+				self.gl.texImage2D( self.gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, parameter.format, parameter.format, parameter.type, positive_z );
+				self.gl.texImage2D( self.gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, parameter.format, parameter.format, parameter.type, negative_z );
+				self.gl.texParameteri( self.gl.TEXTURE_CUBE_MAP, self.gl.TEXTURE_MAG_FILTER, parameter.mag_filter );
+				self.gl.texParameteri( self.gl.TEXTURE_CUBE_MAP, self.gl.TEXTURE_MIN_FILTER, parameter.min_filter );
+				self.gl.texParameteri( self.gl.TEXTURE_CUBE_MAP, self.gl.TEXTURE_WRAP_S, parameter.wrap_s );
+				self.gl.texParameteri( self.gl.TEXTURE_CUBE_MAP, self.gl.TEXTURE_WRAP_T, parameter.wrap_t );
+
+				if ( parameter.use_mipmap ) {
+					self.gl.generateMipmap( self.gl.TEXTURE_CUBE_MAP );
+				}
+
+				self.gl.bindTexture( self.gl.TEXTURE_2D, null );
+			}
+		}
+
+		return parameter.texture;
+
+	};
+
+
+	self.textureCubeMapByPixels = function( parameter ) {
 		if ( typeof parameter !== "object" || parameter === null ) {
 			return false;
 		}
@@ -1324,73 +1446,56 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		if ( typeof parameter.negative_z !== "object" || parameter.negative_z === null ) {
 			return false;
 		}
+		if ( typeof parameter.width !== "number" || parameter.width === null ) {
+			parameter.width = 256;
+		}
+		if ( typeof parameter.height !== "number" || parameter.height === null ) {
+			parameter.height = 256;
+		}
+		if ( typeof parameter.format !== "number" || parameter.format === null ) {
+			parameter.format = self.gl.RGBA;
+		}
+		if ( typeof parameter.type !== "number" || parameter.type === null ) {
+			parameter.type = self.gl.UNSIGNED_BYTE;
+		}
+		if ( typeof parameter.mag_filter !== "number" || parameter.mag_filter === null ) {
+			parameter.mag_filter = self.gl.LINEAR;
+		}
+		if ( typeof parameter.min_filter !== "number" || parameter.min_filter === null ) {
+			parameter.min_filter = self.gl.LINEAR_MIPMAP_NEAREST;
+		}
+		if ( typeof parameter.wrap_s !== "number" || parameter.wrap_s === null ) {
+			parameter.wrap_s = self.gl.CLAMP_TO_EDGE;
+		}
+		if ( typeof parameter.wrap_t !== "number" || parameter.wrap_t === null ) {
+			parameter.wrap_t = self.gl.CLAMP_TO_EDGE;
+		}
+		if ( typeof parameter.use_mipmap !== "boolean" || parameter.use_mipmap === null ) {
+			parameter.use_mipmap = true;
+		}
 
 		if ( typeof parameter.texture !== "object" || parameter.texture === null ) {
 			parameter.texture = self.gl.createTexture();
 		}
 
-		// Private Function
-		// No need of return because texture is already created
-		var attachTexture = function( parameter ) {
-			if ( typeof parameter.texture_target_bind !== "number" || parameter.texture_target_bind === null ) {
-				parameter.texture_target_bind = self.gl.TEXTURE_CUBE_MAP;
-			}
-			if ( typeof parameter.wrap_s !== "number" || parameter.wrap_s === null ) {
-				parameter.wrap_s = self.gl.CLAMP_TO_EDGE;
-			}
-			if ( typeof parameter.wrap_t !== "number" || parameter.wrap_t === null ) {
-				parameter.wrap_t = self.gl.CLAMP_TO_EDGE;
-			}
+		self.gl.bindTexture( self.gl.TEXTURE_CUBE_MAP, parameter.texture );
+		self.gl.texImage2D( self.gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, parameter.format, parameter.width, parameter.height, 0, parameter.format, parameter.type, parameter.positive_x );
+		self.gl.texImage2D( self.gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, parameter.format, parameter.width, parameter.height, 0, parameter.format, parameter.type, parameter.negative_x );
+		self.gl.texImage2D( self.gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, parameter.format, parameter.width, parameter.height, 0, parameter.format, parameter.type, parameter.positive_y );
+		self.gl.texImage2D( self.gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, parameter.format, parameter.width, parameter.height, 0, parameter.format, parameter.type, parameter.negative_y );
+		self.gl.texImage2D( self.gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, parameter.format, parameter.width, parameter.height, 0, parameter.format, parameter.type, parameter.positive_z );
+		self.gl.texImage2D( self.gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, parameter.format, parameter.width, parameter.height, 0, parameter.format, parameter.type, parameter.negative_z );
 
-			if ( typeof parameter.url === "string" && parameter.url !== null ) {
-				self.texture2DByPath( parameter );
-			} else {
-				return false;
-			}
+		self.gl.texParameteri( self.gl.TEXTURE_CUBE_MAP, self.gl.TEXTURE_MAG_FILTER, parameter.mag_filter );
+		self.gl.texParameteri( self.gl.TEXTURE_CUBE_MAP, self.gl.TEXTURE_MIN_FILTER, parameter.min_filter );
+		self.gl.texParameteri( self.gl.TEXTURE_CUBE_MAP, self.gl.TEXTURE_WRAP_S, parameter.wrap_s );
+		self.gl.texParameteri( self.gl.TEXTURE_CUBE_MAP, self.gl.TEXTURE_WRAP_T, parameter.wrap_t );
 
+		if ( parameter.use_mipmap ) {
+			self.gl.generateMipmap( self.gl.TEXTURE_CUBE_MAP );
 		}
 
-		// Positive X
-		if ( typeof parameter.positive_x.texture_target !== "number" || parameter.positive_x.texture_target === null ) {
-			parameter.positive_x.texture_target = self.gl.TEXTURE_CUBE_MAP_POSITIVE_X;
-		}
-		parameter.positive_x.texture = parameter.texture;
-		attachTexture( parameter.positive_x );
-
-		// Negative X
-		if ( typeof parameter.negative_x.texture_target !== "number" || parameter.negative_x.texture_target === null ) {
-			parameter.negative_x.texture_target = self.gl.TEXTURE_CUBE_MAP_NEGATIVE_X;
-		}
-		parameter.negative_x.texture = parameter.texture;
-		attachTexture( parameter.negative_x );
-
-		// Positive Y
-		if ( typeof parameter.positive_y.texture_target !== "number" || parameter.positive_y.texture_target === null ) {
-			parameter.positive_y.texture_target = self.gl.TEXTURE_CUBE_MAP_POSITIVE_Y;
-		}
-		parameter.positive_y.texture = parameter.texture;
-		attachTexture( parameter.positive_y );
-
-		// Negative Y
-		if ( typeof parameter.negative_y.texture_target !== "number" || parameter.negative_y.texture_target === null ) {
-			parameter.negative_y.texture_target = self.gl.TEXTURE_CUBE_MAP_NEGATIVE_Y;
-		}
-		parameter.negative_y.texture = parameter.texture;
-		attachTexture( parameter.negative_y );
-
-		// Positive Z
-		if ( typeof parameter.positive_z.texture_target !== "number" || parameter.positive_z.texture_target === null ) {
-			parameter.positive_z.texture_target = self.gl.TEXTURE_CUBE_MAP_POSITIVE_Z;
-		}
-		parameter.positive_z.texture = parameter.texture;
-		attachTexture( parameter.positive_z );
-
-		// Negative Z
-		if ( typeof parameter.negative_z.texture_target !== "number" || parameter.negative_z.texture_target === null ) {
-			parameter.negative_z.texture_target = self.gl.TEXTURE_CUBE_MAP_NEGATIVE_Z;
-		}
-		parameter.negative_z.texture = parameter.texture;
-		attachTexture( parameter.negative_z );
+		self.gl.bindTexture( self.gl.TEXTURE_2D, null );
 
 		return parameter.texture;
 
@@ -1405,12 +1510,6 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 
 		if ( typeof parameter.url !== "string" || parameter.url === null ) {
 			return false;
-		}
-		if ( typeof parameter.texture_target_bind !== "number" || parameter.texture_target_bind === null ) {
-			parameter.texture_target_bind = self.gl.TEXTURE_2D;
-		}
-		if ( typeof parameter.texture_target !== "number" || parameter.texture_target === null ) {
-			parameter.texture_target = self.gl.TEXTURE_2D;
 		}
 		if ( typeof parameter.format !== "number" || parameter.format === null ) {
 			parameter.format = self.gl.RGBA;
@@ -1430,9 +1529,6 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		if ( typeof parameter.wrap_t !== "number" || parameter.wrap_t === null ) {
 			parameter.wrap_t = self.gl.REPEAT;
 		}
-		if ( typeof parameter.tex_parameter !== "boolean" || parameter.tex_parameter === null ) {
-			parameter.tex_parameter = true;
-		}
 		if ( typeof parameter.use_mipmap !== "boolean" || parameter.use_mipmap === null ) {
 			parameter.use_mipmap = true;
 		}
@@ -1442,9 +1538,9 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		}
 
 		parameter.image = new Image();
-		parameter.image.addEventListener( 'load', function() {
+		parameter.image.onload = function() {
 			self.handleTexture2DLoaded( parameter );
-		}, false );
+		};
 		parameter.image.src = parameter.url;
 
 		return parameter.texture;
@@ -1453,18 +1549,15 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 
 	// Image onload function for texture2DByPath
 	self.handleTexture2DLoaded = function( parameter ) {
-		self.gl.bindTexture( parameter.texture_target_bind, parameter.texture );
-		self.gl.texImage2D( parameter.texture_target, 0, parameter.format, parameter.format, parameter.type, parameter.image );
+		self.gl.bindTexture( self.gl.TEXTURE_2D, parameter.texture );
+		self.gl.texImage2D( self.gl.TEXTURE_2D, 0, parameter.format, parameter.format, parameter.type, parameter.image );
+		self.gl.texParameteri( self.gl.TEXTURE_2D, self.gl.TEXTURE_MAG_FILTER, parameter.mag_filter );
+		self.gl.texParameteri( self.gl.TEXTURE_2D, self.gl.TEXTURE_MIN_FILTER, parameter.min_filter );
+		self.gl.texParameteri( self.gl.TEXTURE_2D, self.gl.TEXTURE_WRAP_S, parameter.wrap_s );
+		self.gl.texParameteri( self.gl.TEXTURE_2D, self.gl.TEXTURE_WRAP_T, parameter.wrap_t );
 
-		if ( parameter.tex_parameter ) {
-			self.gl.texParameteri( parameter.texture_target_bind, self.gl.TEXTURE_MAG_FILTER, parameter.mag_filter );
-			self.gl.texParameteri( parameter.texture_target_bind, self.gl.TEXTURE_MIN_FILTER, parameter.min_filter );
-			self.gl.texParameteri( parameter.texture_target_bind, self.gl.TEXTURE_WRAP_S, parameter.wrap_s );
-			self.gl.texParameteri( parameter.texture_target_bind, self.gl.TEXTURE_WRAP_T, parameter.wrap_t );
-
-			if ( parameter.use_mipmap ) {
-				self.gl.generateMipmap( parameter.texture_target_bind );
-			}
+		if ( parameter.use_mipmap ) {
+			self.gl.generateMipmap( self.gl.TEXTURE_2D );
 		}
 
 		self.gl.bindTexture( self.gl.TEXTURE_2D, null );
@@ -1479,12 +1572,6 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 
 		if ( typeof parameter.pixels !== "object" || parameter.pixels === null ) {
 			return false;
-		}
-		if ( typeof parameter.texture_target_bind !== "number" || parameter.texture_target_bind === null ) {
-			parameter.texture_target_bind = self.gl.TEXTURE_2D;
-		}
-		if ( typeof parameter.texture_target !== "number" || parameter.texture_target === null ) {
-			parameter.texture_target = self.gl.TEXTURE_2D;
 		}
 		if ( typeof parameter.width !== "number" || parameter.width === null ) {
 			parameter.width = 256;
@@ -1510,9 +1597,6 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		if ( typeof parameter.wrap_t !== "number" || parameter.wrap_t === null ) {
 			parameter.wrap_t = self.gl.REPEAT;
 		}
-		if ( typeof parameter.tex_parameter !== "boolean" || parameter.tex_parameter === null ) {
-			parameter.tex_parameter = true;
-		}
 		if ( typeof parameter.use_mipmap !== "boolean" || parameter.use_mipmap === null ) {
 			parameter.use_mipmap = true;
 		}
@@ -1521,18 +1605,15 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 			parameter.texture = self.gl.createTexture();
 		}
 
-		self.gl.bindTexture( parameter.texture_target_bind, parameter.texture );
-		self.gl.texImage2D( parameter.texture_target, 0, parameter.format, parameter.width, parameter.height, 0, parameter.format, parameter.type, parameter.pixels );
+		self.gl.bindTexture( self.gl.TEXTURE_2D, parameter.texture );
+		self.gl.texImage2D( self.gl.TEXTURE_2D, 0, parameter.format, parameter.width, parameter.height, 0, parameter.format, parameter.type, parameter.pixels );
+		self.gl.texParameteri( self.gl.TEXTURE_2D, self.gl.TEXTURE_MAG_FILTER, parameter.mag_filter );
+		self.gl.texParameteri( self.gl.TEXTURE_2D, self.gl.TEXTURE_MIN_FILTER, parameter.min_filter );
+		self.gl.texParameteri( self.gl.TEXTURE_2D, self.gl.TEXTURE_WRAP_S, parameter.wrap_s );
+		self.gl.texParameteri( self.gl.TEXTURE_2D, self.gl.TEXTURE_WRAP_T, parameter.wrap_t );
 
-		if ( parameter.tex_parameter ) {
-			self.gl.texParameteri( parameter.texture_target_bind, self.gl.TEXTURE_MAG_FILTER, parameter.mag_filter );
-			self.gl.texParameteri( parameter.texture_target_bind, self.gl.TEXTURE_MIN_FILTER, parameter.min_filter );
-			self.gl.texParameteri( parameter.texture_target_bind, self.gl.TEXTURE_WRAP_S, parameter.wrap_s );
-			self.gl.texParameteri( parameter.texture_target_bind, self.gl.TEXTURE_WRAP_T, parameter.wrap_t );
-
-			if ( parameter.use_mipmap ) {
-				self.gl.generateMipmap( parameter.texture_target_bind );
-			}
+		if ( parameter.use_mipmap ) {
+			self.gl.generateMipmap( self.gl.TEXTURE_2D );
 		}
 
 		self.gl.bindTexture( self.gl.TEXTURE_2D, null );
@@ -1553,12 +1634,6 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		if ( typeof parameter.height !== "number" || parameter.height === null ) {
 			parameter.height = 256;
 		}
-		if ( typeof parameter.texture_target_bind !== "number" || parameter.texture_target_bind === null ) {
-			parameter.texture_target_bind = self.gl.TEXTURE_2D;
-		}
-		if ( typeof parameter.texture_target !== "number" || parameter.texture_target === null ) {
-			parameter.texture_target = self.gl.TEXTURE_2D;
-		}
 		if ( typeof parameter.format !== "number" || parameter.format === null ) {
 			parameter.format = self.gl.RGBA;
 		}
@@ -1577,23 +1652,17 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		if ( typeof parameter.wrap_t !== "number" || parameter.wrap_t === null ) {
 			parameter.wrap_t = self.gl.REPEAT;
 		}
-		if ( typeof parameter.tex_parameter !== "boolean" || parameter.tex_parameter === null ) {
-			parameter.tex_parameter = true;
-		}
 
 		if ( typeof parameter.texture !== "object" || parameter.texture === null ) {
 			parameter.texture = self.gl.createTexture();
 		}
 
-		self.gl.bindTexture( parameter.texture_target_bind, parameter.texture );
-		self.gl.texImage2D( parameter.texture_target, 0, parameter.format, parameter.width, parameter.height, 0, parameter.format, parameter.type, null );
-
-		if ( parameter.tex_parameter ) {
-			self.gl.texParameteri( parameter.texture_target_bind, self.gl.TEXTURE_MAG_FILTER, parameter.mag_filter );
-			self.gl.texParameteri( parameter.texture_target_bind, self.gl.TEXTURE_MIN_FILTER, parameter.min_filter );
-			self.gl.texParameteri( parameter.texture_target_bind, self.gl.TEXTURE_WRAP_S, parameter.wrap_s );
-			self.gl.texParameteri( parameter.texture_target_bind, self.gl.TEXTURE_WRAP_T, parameter.wrap_t );
-		}
+		self.gl.bindTexture( self.gl.TEXTURE_2D, parameter.texture );
+		self.gl.texImage2D( self.gl.TEXTURE_2D, 0, parameter.format, parameter.width, parameter.height, 0, parameter.format, parameter.type, null );
+		self.gl.texParameteri( self.gl.TEXTURE_2D, self.gl.TEXTURE_MAG_FILTER, parameter.mag_filter );
+		self.gl.texParameteri( self.gl.TEXTURE_2D, self.gl.TEXTURE_MIN_FILTER, parameter.min_filter );
+		self.gl.texParameteri( self.gl.TEXTURE_2D, self.gl.TEXTURE_WRAP_S, parameter.wrap_s );
+		self.gl.texParameteri( self.gl.TEXTURE_2D, self.gl.TEXTURE_WRAP_T, parameter.wrap_t );
 
 		self.gl.bindTexture( self.gl.TEXTURE_2D, null );
 
@@ -1610,12 +1679,6 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		if ( typeof parameter.texture !== "object" || parameter.texture === null ) {
 			return false;
 		}
-		if ( typeof parameter.texture_target_bind !== "number" || parameter.texture_target_bind === null ) {
-			parameter.texture_target_bind = self.gl.TEXTURE_2D;
-		}
-		if ( typeof parameter.texture_target !== "number" || parameter.texture_target === null ) {
-			parameter.texture_target = self.gl.TEXTURE_2D;
-		}
 		if ( typeof parameter.format !== "number" || parameter.format === null ) {
 			parameter.format = self.gl.COLOR_ATTACHMENT0;
 		}
@@ -1624,10 +1687,10 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		}
 
 		self.gl.bindFramebuffer( self.gl.FRAMEBUFFER, parameter.framebuffer );
-		self.gl.bindTexture( parameter.texture_target_bind, parameter.texture );
-		self.gl.framebufferTexture2D( self.gl.FRAMEBUFFER, parameter.format, parameter.texture_target, parameter.texture, 0 );
+		self.gl.bindTexture( self.gl.TEXTURE_2D, parameter.texture );
+		self.gl.framebufferTexture2D( self.gl.FRAMEBUFFER, parameter.format, self.gl.TEXTURE_2D, parameter.texture, 0 );
 		self.gl.bindTexture( self.gl.TEXTURE_2D, null );
-		self.gl.bindFramebuffer(self.gl.FRAMEBUFFER, null);
+		self.gl.bindFramebuffer( self.gl.FRAMEBUFFER, null );
 
 		return parameter.framebuffer;
 	};
