@@ -24,7 +24,7 @@ Size-flexible Banner for Your Website Branding. Template Tag and Shortcode. 'SEN
 * 'SENOR' Library System Chart ('SENOR' is using a three-phases procedure as below)
 
          Internet
- (TCP/IP Protocol ,etc.)
+ (TCP/IP Protocol, etc.)
            | ^
 From       | | To Server
 Server     | | From
@@ -81,7 +81,7 @@ Program    v | cation
 
 **Arguments of the WordPress shortcode, [jimmy_branding]**
 * 'id' - (default: 'jimmy-branding')
-* 'name' - assign slug name of your content (default: '') must needed
+* 'name' - assign slug name of your content, must needed
 * 'ratio' - 'false' is using pixels, 'parent' is using width parent element's width, 'window' is using window's width and height to make the resolution of the template (default: 'false')
 * 'width_pixels' - (default: '300')
 * 'width_percents' - (default: '100')
@@ -101,9 +101,9 @@ Now on Beta Testing. If you want, download and test this plugin.
 
 == Frequently Asked Questions ==
 
-= Why does 'SENOR' have no function to make texture by "Image" object or "img" tag directly? =
+= Why does 'SENOR' have no function to make texture by 'Image' object or 'img' tag directly? =
 
-"Image" object and "img" tag have the process to load each image. This loading process is a little tricky as opposed to the native usage of OpenGL. If the image has not been loaded yet, making texture fails. To hide this failure, 'SENOR' has the function to make texture by URL address or pixels data. In case of making texture by 'video' tag, you need to draw the video image to a 2D canvas by CanvasRenderingContext2D.drawImage(), then make RGB (per 1 byte) pixels data with this canvas by CanvasRenderingContext2D.getImageData(). The function, getImageData, is restricted by Same-Origin Policy or CORS (Cross-Origin Resource Sharing). Put 'crossorigin' attribute to the 'video' tag if you need. Plus, make sure to play and control the video by functions, and iterate the process of drawImage, getImageData and making/update texture.
+'Image' object and 'img' tag have the process to load each image. This loading process is a little tricky as opposed to the native usage of OpenGL. If the image has not been loaded yet, making texture fails. To hide this failure, 'SENOR' has the function to make texture by URL address or pixels data. In case of making texture by 'video' tag, you need to draw the video image to a 2D canvas by CanvasRenderingContext2D.drawImage(), then make RGBA pixels data with the canvas by CanvasRenderingContext2D.getImageData() (returns ImageData object which includes width, height and pixels similar to gl.RGBA8). The function, getImageData, is restricted by Same-Origin Policy or CORS (Cross-Origin Resource Sharing). Put 'crossorigin' attribute on the 'video' tag if you need. Plus, make sure to play and control the video by functions, and iterate the process of drawImage, getImageData and making/update texture. The Codec and its container (extension) of the video file is needed to be able to play on browsers by 'video' tag.
 
 == Copyright ==
 
@@ -127,7 +127,7 @@ Several codes of 'SENOR', a WebGL library are derived from Mozilla Developer Net
 = 0.9.4 Beta =
 * Made Texture Array Two dimention
 * Made functions for Cube Texture
-: June 12, 2017
+: June 13, 2017
 
 = 0.9.3 Beta =
 * Confirmed Compatibility with WordPress Version 4.8
