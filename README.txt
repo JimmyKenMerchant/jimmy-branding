@@ -65,12 +65,12 @@ Program    v | cation
 = Usage =
 **Template Tag, jimmy_branding_output**
 * Copy and paste below code and the template tag on your theme, e.g., index.php.
-<?php
+
 	if ( function_exists( 'jimmy_branding_output' ) ) {
 		// If you want, configure ID of this template in the argument of this template tag as String
 		jimmy_branding_output();
 	}
-?>
+
 * Make your branding HTML code on 'jBrandings' menu.
 * Select your content and on 'Select' sub menu.
 * Customize banner and opener (Triangle on the Center Bottom) size on 'Select' sub menu.
@@ -81,7 +81,7 @@ Program    v | cation
 
 **Arguments of the WordPress shortcode, [jimmy_branding]**
 * 'id' - (default: 'jimmy-branding')
-* 'name' - assign slug name of your content, must needed
+* 'name' - assign slug name of your content, must be needed
 * 'ratio' - 'false' is using pixels, 'parent' is using width parent element's width, 'window' is using window's width and height to make the resolution of the template (default: 'false')
 * 'width_pixels' - (default: '300')
 * 'width_percents' - (default: '100')
@@ -93,11 +93,13 @@ Program    v | cation
 * 'opener_width' - (default: '28')
 * 'opener_choice' - Show Opener ('true') or not (default: 'true')
 
-Usage Samples are on http://electronics.jimmykenmerchant.com/jimmy-branding/ please check out.
+Usage Samples are on <http://electronics.jimmykenmerchant.com/jimmy-branding/> please check out.
 
 == Installation ==
 
-Now on Beta Testing. If you want, download and test this plugin.
+From "Plugins" of your admin page, just search and install "Jimmy Branding". Make sure to activate "Jimmy Branding" in "Installed Plugins", a "Plugins" sub menu.
+
+You can download and test the latest version of this plugin from GitHub public repository. <http://electronics.jimmykenmerchant.com/jimmy-branding/>
 
 == Frequently Asked Questions ==
 
@@ -120,7 +122,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
-Several codes of 'SENOR', a WebGL library are derived from Mozilla Developer Network (https://github.com/mdn/webgl-examples). The license is under Creative Commons Zero v1.0 Universal (https://github.com/mdn/webgl-examples/blob/gh-pages/LICENSE). This license is compatible with GPLv2 or later.
+Several codes of 'SENOR', a WebGL library are derived from Mozilla Developer Network, <https://github.com/mdn/webgl-examples> . The license is under Creative Commons Zero v1.0 Universal, <https://github.com/mdn/webgl-examples/blob/gh-pages/LICENSE> . This license is compatible with GPLv2 or later.
 
 == Changelog ==
 

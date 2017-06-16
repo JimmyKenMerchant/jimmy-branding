@@ -5,7 +5,7 @@ Plugin URI: http://electronics.jimmykenmerchant.com/jimmy-branding/
 Description: Flexible Branding Banner with WebGL
 Author: Kenta Ishii
 Author URI: http://electronics.jimmykenmerchant.com
-Version: 0.9.4 Beta
+Version: 1.0
 Text Domain: jimmy-branding
 Domain Path: /languages
 License: GPL2 or Later
@@ -411,7 +411,7 @@ Now On: <?php echo $branding_now; ?>
 		<input class="jimmy-branding-admin-input" type="radio" name="jimmy_branding_res_choice_value" value="ratio_p"<?php if ( 'ratio_p' === $jimmy_branding_option_res_choice ) { echo ' checked="checked"'; }?> unselectable="on" />
 		<label unselectable="on">Ratio by Parent Width</label>
 		<input class="jimmy-branding-admin-input" type="radio" name="jimmy_branding_res_choice_value" value="ratio_w"<?php if ( 'ratio_w' === $jimmy_branding_option_res_choice ) { echo ' checked="checked"'; }?> unselectable="on" />
-		<label unselectable="on">Ratio by Window Width & Height</label>
+		<label unselectable="on">Ratio by Window Width &amp; Height</label>
 	</div>
 <?php
 
