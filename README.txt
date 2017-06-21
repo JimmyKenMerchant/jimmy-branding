@@ -7,7 +7,7 @@ Author: Kenta Ishii
 Author URI: http://electronics.jimmykenmerchant.com
 Requires at least: 4.7
 Tested up to: 4.8
-Stable tag: 1.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,54 +16,60 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Size-flexible Banner for Your Website Branding. Template Tag and Shortcode. 'SENOR' WebGL Library, "System of Whole Objective Oriented Structure". Change Height Size by Yellow Triangle on the Center Bottom (Color Changeable).
 
 = Futures =
-**Template Tag, jimmy_branding_output**
-**'jBrandings' Admin Menu**
-**Shortcode, [jimmy_branding]**
-**Original WebGL library, 'SENOR'**
+
+* Template Tag, 'jimmy_branding_output'
+* Shortcode, '[jimmy_branding]'
+* 'jBrandings' Admin Menu
+* 'jPromoter' Role
+* Original WebGL library, 'SENOR'
+
 **'SENOR' (exactly, 'SENOR' is the naming union of 'SENORWEBGL1', 'SENORWEBGL2' and 'SENORUTL') is an client side WebGL library of Kenta Ishii licensed under GPLv2 or later. This Library aims to be "System of Whole Objective Oriented Structure" to make/transmit data of 3D-graphic (Three Dimensional Graphic) in/between client computers and servers. This system is unique because whole processes depend on objective oriented structure. By doing so, engineers to participate in 3D-graphic projects can be able to build systems easier than inconsistent structures. 'SENOTRWEBGL1' is a wrapper of WebGL1.0 context. 'SENORWEBGL2' is a wrapper of WebGL2.0 context ('SENORWEBGL2' is now on reserved). 'SENORUTL' is utilities to make 3D-graphic. 'SENOR' also aims to consider compatibility to code between 'SENORWEBGL1', WebGL1.0 context and 'SENORWEBGL2', WebGL2.0 context. It's so called "The Same Coding Rarely Except Extension". By wrapping whole context with each 'canvas' HTML tag, 'SENOR' aims usage of multiple contexts on the same page of your website.**
+
 * 'SENOR' Library System Chart ('SENOR' is using a three-phases procedure as below)
 
-         Internet
- (TCP/IP Protocol, etc.)
-           | ^
-From       | | To Server
-Server     | | From
-To Client  | | Client
-           v |
--------------------------
-|     (1) Raw Data      |
-| Vertices, Coordinates,|
-| Phong Parameter, etc. |
-|  On JSON (JavaScript  |
-| Object Notation), etc.|
--------------------------
-           | ^
-JavaScript | |JavaScript
-Function to| |Function to
-Ojbectiry  | |Raw Data
-           v |
--------------------------
-|     (2) Objectify     |
-| Object Structuring    |
-| Vertices, Coordinates,|
-| Phong Prameter, etc.  |
-|  Via 'SENOR' Library  |
--------------------------
-           | ^
-Output     | | Input   
-by         | | by User
-JavaScript | | Communi-
-Program    v | cation
--------------------------
-|     (3) Use Object    |
-| In Applications,      |
-| Game, CAI (Computer-  |
-| Assisted Instruction) |
-| CAD, Monitor, etc.    |
--------------------------
+	         Internet
+	 (TCP/IP Protocol, etc.)
+	           | ^
+	From       | | To Server
+	Server     | | From
+	To Client  | | Client
+	           v |
+	-------------------------
+	|     (1) Raw Data      |
+	| Vertices, Coordinates,|
+	| Phong Parameter, etc. |
+	|  On JSON (JavaScript  |
+	| Object Notation), etc.|
+	-------------------------
+	           | ^
+	JavaScript | |JavaScript
+	Function to| |Function to
+	Ojbectiry  | |Raw Data
+	           v |
+	-------------------------
+	|     (2) Objectify     |
+	| Object Structuring    |
+	| Vertices, Coordinates,|
+	| Phong Prameter, etc.  |
+	|  Via 'SENOR' Library  |
+	-------------------------
+	           | ^
+	Output     | | Input   
+	by         | | by User
+	JavaScript | | Communi-
+	Program    v | cation
+	-------------------------
+	|     (3) Use Object    |
+	| In Applications,      |
+	| Game, CAI (Computer-  |
+	| Assisted Instruction) |
+	| CAD, Monitor, etc.    |
+	-------------------------
 
 = Usage =
+
 **Template Tag, jimmy_branding_output**
+
 * Copy and paste below code and the template tag on your theme, e.g., index.php.
 
 	if ( function_exists( 'jimmy_branding_output' ) ) {
@@ -76,10 +82,12 @@ Program    v | cation
 * Customize banner and opener (Triangle on the Center Bottom) size on 'Select' sub menu.
 
 **Shortcode, [jimmy_branding]**
+
 * On 'Select' sub menu, check 'SENOR WebGL Library' to 'Stand Alone' and 'Shortcode Usage' to 'Use'.
 * On your post, use shortcode [jimmy_branding] with several arguments. 'name' must be needed.
 
 **Arguments of the WordPress shortcode, [jimmy_branding]**
+
 * 'id' - (default: 'jimmy-branding')
 * 'name' - assign slug name of your content, must be needed
 * 'ratio' - 'false' is using pixels, 'parent' is using width parent element's width, 'window' is using window's width and height to make the resolution of the template (default: 'false')
@@ -124,7 +132,24 @@ GNU General Public License for more details.
 
 Several codes of 'SENOR', a WebGL library are derived from Mozilla Developer Network, <https://github.com/mdn/webgl-examples> . The license is under Creative Commons Zero v1.0 Universal, <https://github.com/mdn/webgl-examples/blob/gh-pages/LICENSE> . This license is compatible with GPLv2 or later.
 
+== Screenshots ==
+1. Usage Sample of Template Tag, 'jimmy_branding_output'
+2. Usage sample of Shortcode, '[jimmy_branding]'
+3. 'Select' Sub Menu of 'jBrandings' Menu
+
+== Upgrade Notice ==
+= 1.0.1 =
+Please upgrade because of fixing bugs and having new futures: Added minimized files of JavaScript for increasing loading speed on browsers.
+
 == Changelog ==
+
+= 1.0.1 =
+* Added minimized files of JavaScript for increasing loading speed on browsers
+: June 21, 2017
+
+= 1.0 =
+* Release in WordPress.org
+: June 21, 2017
 
 = 0.9.4 Beta =
 * Made Texture Array Two dimention

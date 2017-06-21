@@ -5,7 +5,7 @@ Plugin URI: http://electronics.jimmykenmerchant.com/jimmy-branding/
 Description: Flexible Branding Banner with WebGL
 Author: Kenta Ishii
 Author URI: http://electronics.jimmykenmerchant.com
-Version: 1.0
+Version: 1.0.1
 Text Domain: jimmy-branding
 Domain Path: /languages
 License: GPL2 or Later
@@ -146,24 +146,24 @@ function jimmy_branding_script() {
 	if ( ! empty( get_option( 'jimmy_branding_option_content' ) ) ) {
 
 		if ( 'none' !== get_option( 'jimmy_branding_option_webgl_choice' ) ) {
-			wp_enqueue_script( 'jimmy-branding-senor-webgl',  plugins_url( 'js/senor-webgl.js', __FILE__ ), array(), '1.0' );
-			wp_enqueue_script( 'jimmy-branding-attacher-webgl',  plugins_url( 'js/attacher-webgl.js', __FILE__ ), array( 'jimmy-branding-senor-webgl' ), '1.0' );
+			wp_enqueue_script( 'jimmy-branding-senor-webgl',  plugins_url( 'js/senor-webgl.min.js', __FILE__ ), array(), '1.0' );
+			wp_enqueue_script( 'jimmy-branding-attacher-webgl',  plugins_url( 'js/attacher-webgl.min.js', __FILE__ ), array( 'jimmy-branding-senor-webgl' ), '1.0' );
 		}
 
 		if ( 'display' === get_option( 'jimmy_branding_option_opener_choice' ) ) {
-			wp_enqueue_script( 'jimmy-branding-window-opener',  plugins_url( 'js/window-opener.js', __FILE__ ), array( 'jquery' ), '1.0' );
+			wp_enqueue_script( 'jimmy-branding-window-opener',  plugins_url( 'js/window-opener.min.js', __FILE__ ), array( 'jquery' ), '1.0' );
 		}
 
 		wp_enqueue_style( 'jimmy-branding-style',  plugins_url( 'style-jimmy-branding.css', __FILE__ ), array(), '1.0' );
 	} else {
 
 		if ( 'alone' === get_option( 'jimmy_branding_option_webgl_choice' ) ) {
-			wp_enqueue_script( 'jimmy-branding-senor-webgl',  plugins_url( 'js/senor-webgl.js', __FILE__ ), array(), '1.0' );
-			wp_enqueue_script( 'jimmy-branding-attacher-webgl',  plugins_url( 'js/attacher-webgl.js', __FILE__ ), array( 'jimmy-branding-senor-webgl' ), '1.0' );
+			wp_enqueue_script( 'jimmy-branding-senor-webgl',  plugins_url( 'js/senor-webgl.min.js', __FILE__ ), array(), '1.0' );
+			wp_enqueue_script( 'jimmy-branding-attacher-webgl',  plugins_url( 'js/attacher-webgl.min.js', __FILE__ ), array( 'jimmy-branding-senor-webgl' ), '1.0' );
 		}
 
 		if ( 'use' === get_option( 'jimmy_branding_option_shortcode_choice' ) ) {
-			wp_enqueue_script( 'jimmy-branding-window-opener',  plugins_url( 'js/window-opener.js', __FILE__ ), array( 'jquery' ), '1.0' );
+			wp_enqueue_script( 'jimmy-branding-window-opener',  plugins_url( 'js/window-opener.min.js', __FILE__ ), array( 'jquery' ), '1.0' );
 			wp_enqueue_style( 'jimmy-branding-style',  plugins_url( 'style-jimmy-branding.css', __FILE__ ), array(), '1.0' );
 		}
 
@@ -179,8 +179,8 @@ add_action( 'wp_enqueue_scripts', 'jimmy_branding_script' );
  */
 function jimmy_branding_admin_script() {
 	if ( 'none' !== get_option( 'jimmy_branding_option_webgl_choice' ) ) {
-		wp_enqueue_script( 'jimmy-branding-senor-webgl',  plugins_url( 'js/senor-webgl.js', __FILE__ ), array(), '1.0' );
-		wp_enqueue_script( 'jimmy-branding-attacher-webgl',  plugins_url( 'js/attacher-webgl.js', __FILE__ ), array( 'jimmy-branding-senor-webgl' ), '1.0' );
+		wp_enqueue_script( 'jimmy-branding-senor-webgl',  plugins_url( 'js/senor-webgl.min.js', __FILE__ ), array(), '1.0' );
+		wp_enqueue_script( 'jimmy-branding-attacher-webgl',  plugins_url( 'js/attacher-webgl.min.js', __FILE__ ), array( 'jimmy-branding-senor-webgl' ), '1.0' );
 	}
 
 	wp_enqueue_style( 'jimmy-branding-admin-style',  plugins_url( 'style-jimmy-branding-admin.css', __FILE__ ), array(), null );

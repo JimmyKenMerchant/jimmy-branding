@@ -466,18 +466,20 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 	};
 
 	self.Object.prototype.free = function() {
-		// Free Unique objects but not sanitize WebGL side because of not original
 		if ( this.shaders !== null ) {
 			for ( var i = 0, a = this.shaders.length; i < a; i++ ) {
 				var index = this.shaders.length - 1;
-				this.shaders[index].program = null;
 				if ( this.shaders[index].attributes !== null ) {
 					for ( var j = 0, b = this.shaders[index].attributes.length; j < b; j++ ) {
-						this.shaders[index].attributes[this.shaders[index].attributes.length - 1] = null;
+						var index_2 = this.shaders[index].attributes.length - 1;
+						self.gl.disableVertexAttribArray( this.shaders[index].attributes[index_2] );
+						this.shaders[index].attributes[index_2] = null;
 						this.shaders[index].attributes.pop();
 					}
 				}
 				this.shaders[index].attributes = null;
+				self.gl.deleteProgram( this.shaders[index].program );
+				this.shaders[index].program = null;
 				this.shaders[index] = null;
 				this.shaders.pop();
 			}
@@ -494,7 +496,9 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 
 		if ( this.buffers !== null ) {
 			for ( var i = 0, a = this.buffers.length; i < a; i++ ) {
-				this.buffers[this.buffers.length - 1] = null;
+				var index = this.buffers.length - 1;
+				self.gl.deleteBuffer( this.buffers[index] );
+				this.buffers[index] = null;
 				this.buffers.pop();
 			}
 		}
@@ -516,7 +520,9 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 				var index = this.textures.length - 1;
 				if ( this.textures[index] !== null ) {
 					for ( var j = 0, b = this.textures[index].length; j < b; j++ ) {
-						this.textures[index][this.textures[index].length - 1] = null;
+						var index_2 = this.textures[index].length - 1;
+						self.gl.deleteTexture( this.textures[index][index_2] );
+						this.textures[index][index_2] = null;
 						this.textures[index].pop();
 					}
 				}
@@ -634,40 +640,6 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 
 	};
 
-	self.Object.prototype.sanitize = function() {
-		// Sanitize WebGL Side because of original object
-		// If free ArrayObject, then sanitize original object too when no future use of shaders, etc.
-		if ( this.shaders !== null ) {
-			for ( var i = 0, a = this.shaders.length; i < a; i++ ) {
-				self.gl.deleteProgram( this.shaders[i].program );
-				if ( this.shaders[i].attributes !== null ) {
-					for ( var j = 0, b = this.shaders[i].attributes.length; j < b; j++ ) {
-						self.gl.disableVertexAttribArray( this.shaders[i].attributes[j] );
-					}
-				}
-			}
-		}
-
-		if ( this.buffers !== null ) {
-			for ( var i = 0, a = this.buffers.length; i < a; i++ ) {
-				self.gl.deleteBuffer( this.buffers[i] );
-			}
-		}
-
-		// Multi (Two) Dimentional Array
-		if ( this.textures !== null ) {
-			for ( var i = 0, a = this.textures.length; i < a; i++ ) {
-				if ( this.textures[i] !== null ) {
-					for ( var j = 0, b = this.textures[i].length; j < b; j++ ) {
-						self.gl.deleteTexture( this.textures[i][j] );
-					}
-				}
-			}
-		}
-
-		this.free();
-
-	};
 
 	/**
 	 * Use in Object to render
@@ -1077,15 +1049,7 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 		}
 	};
 
-	// Just only cut references from parent node
-	self.ArrayObject.prototype.deleteLight = function( index ) {
-			this[index] = null;
-			this.splice( index, 1 );
-	};
-
-	// Considering Garbage Collection's movement (Null All)
 	self.ArrayObject.prototype.delete = function( index ) {
-			this[index].free;
 			this[index] = null;
 			this.splice( index, 1 );
 	};
@@ -1121,23 +1085,27 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 	self.ArrayObject.prototype.free = function() {
 		// Free objects of Array inheritance
 		for ( var i = 0, a = this.length; i < a; i++ ) {
-			this[this.length - 1].free();
-			this[this.length - 1] = null;
+			var index = this.length - 1;
+			this[index].free();
+			this[index] = null;
 			this.pop();
 		}
 
-		// Free Unique objects but not sanitize WebGL side because of not original
+		// Free unique objects
 		if ( this.shaders !== null ) {
 			for ( var i = 0, a = this.shaders.length; i < a; i++ ) {
 				var index = this.shaders.length - 1;
-				this.shaders[index].program = null;
 				if ( this.shaders[index].attributes !== null ) {
 					for ( var j = 0, b = this.shaders[index].attributes.length; j < b; j++ ) {
-						this.shaders[index].attributes[this.shaders[index].attributes.length - 1] = null;
+						var index_2 = this.shaders[index].attributes.length - 1;
+						self.gl.disableVertexAttribArray( this.shaders[index].attributes[index_2] );
+						this.shaders[index].attributes[index_2] = null;
 						this.shaders[index].attributes.pop();
 					}
 				}
 				this.shaders[index].attributes = null;
+				self.gl.deleteProgram( this.shaders[index].program );
+				this.shaders[index].program = null;
 				this.shaders[index] = null;
 				this.shaders.pop();
 			}
@@ -1154,7 +1122,9 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 
 		if ( this.buffers !== null ) {
 			for ( var i = 0, a = this.buffers.length; i < a; i++ ) {
-				this.buffers[this.buffers.length - 1] = null;
+				var index = this.buffers.length - 1;
+				self.gl.deleteBuffer( this.buffers[index] );
+				this.buffers[index] = null;
 				this.buffers.pop();
 			}
 		}
@@ -1176,7 +1146,9 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 				var index = this.textures.length - 1;
 				if ( this.textures[index] !== null ) {
 					for ( var j = 0, b = this.textures[index].length; j < b; j++ ) {
-						this.textures[index][this.textures[index].length - 1] = null;
+						var index_2 = this.textures[index].length - 1;
+						self.gl.deleteTexture( this.textures[index][index_2] );
+						this.textures[index][index_2] = null;
 						this.textures[index].pop();
 					}
 				}
@@ -1291,6 +1263,7 @@ var SENORWEBGL1 = SENORWEBGL1 || function() {
 			}
 		}
 		this.reserve = null;
+
 	};
 
 
