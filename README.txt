@@ -7,7 +7,7 @@ Author: Kenta Ishii
 Author URI: http://electronics.jimmykenmerchant.com
 Requires at least: 4.7
 Tested up to: 4.8
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -147,10 +147,14 @@ Several codes of 'SENOR', a WebGL library are derived from Mozilla Developer Net
 3. 'Select' Sub Menu of 'jBrandings' Menu
 
 == Upgrade Notice ==
-= 1.0.1 =
-Please upgrade because of fixing bugs and having new futures: Added minimized files of JavaScript for increasing loading speed on browsers.
+= 1.0.2 =
+Please upgrade because of fixing bugs and having new futures: Modified README.txt.
 
 == Changelog ==
+
+= 1.0.2 =
+* Modified README.txt
+: June 22, 2017
 
 = 1.0.1 =
 * Added minimized files of JavaScript for increasing loading speed on browsers

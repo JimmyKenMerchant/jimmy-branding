@@ -5,7 +5,7 @@ Plugin URI: http://electronics.jimmykenmerchant.com/jimmy-branding/
 Description: Flexible Branding Banner with WebGL
 Author: Kenta Ishii
 Author URI: http://electronics.jimmykenmerchant.com
-Version: 1.0.1
+Version: 1.0.2
 Text Domain: jimmy-branding
 Domain Path: /languages
 License: GPL2 or Later
