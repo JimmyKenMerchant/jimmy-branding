@@ -7,7 +7,7 @@ Author: Kenta Ishii
 Author URI: http://electronics.jimmykenmerchant.com
 Requires at least: 4.7
 Tested up to: 4.8
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,25 +71,22 @@ Size-flexible Banner for Your Website. Use as your unique billboard! Template Ta
 
 Template Tag, jimmy_branding_output
 
-* Copy and paste below code and the template tag on your theme, e.g., index.php.
+    if ( function_exists( 'jimmy_branding_output' ) ) {
+        // If you want, configure ID of this template in the argument of this template tag as String
+        jimmy_branding_output();
+    }
 
-    <?php
-        if ( function_exists( 'jimmy_branding_output' ) ) {
-            // If you want, configure ID of this template in the argument of this template tag as String
-            jimmy_branding_output();
-        }
-    ?>
-
+* Put the template tag on your theme, e.g., index.php.
 * Make your branding HTML code on 'jBrandings' menu.
 * Select your jBranding content on 'Select' sub menu.
 * Customize banner and opener (Triangle on the Center Bottom) size on 'Select' sub menu.
 
 Shortcode, [jimmy_branding]
 
+    [jimmy_branding name="slug-name-of-your-jbranding-content"]
+
 * On 'Select' sub menu, check 'SENOR WebGL Library' to 'Stand Alone' and 'Shortcode Usage' to 'Use'.
 * On your post, use shortcode [jimmy_branding] with several arguments. 'name' must be needed.
-
-    [jimmy_branding name="slug-name-of-your-jbranding-content"]
 
 Arguments of the WordPress shortcode, [jimmy_branding]
 
@@ -147,10 +144,14 @@ Several codes of 'SENOR', a WebGL library are derived from Mozilla Developer Net
 3. 'Select' Sub Menu of 'jBrandings' Menu
 
 == Upgrade Notice ==
-= 1.0.2 =
-Please upgrade because of fixing bugs and having new futures: Modified README.txt.
+= 1.0.3 =
+Please upgrade because of fixing bugs and having new futures: Modified README.txt for Readability.
 
 == Changelog ==
+
+= 1.0.3 =
+* Modified README.txt for Readability
+: June 22, 2017
 
 = 1.0.2 =
 * Modified README.txt
