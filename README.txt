@@ -6,8 +6,8 @@ Tags: webgl, 3d, branding, brand, banner, billboard
 Author: Kenta Ishii
 Author URI: http://electronics.jimmykenmerchant.com
 Requires at least: 4.7
-Tested up to: 4.8
-Stable tag: 1.0.3
+Tested up to: 4.9
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -144,10 +144,14 @@ Several codes of 'SENOR', a WebGL library are derived from Mozilla Developer Net
 3. 'Select' Sub Menu of 'jBrandings' Menu
 
 == Upgrade Notice ==
-= 1.0.3 =
-Please upgrade because of fixing bugs and having new futures: Modified README.txt for Readability.
+= 1.0.4 =
+Please upgrade because of fixing bugs and having new futures: Confirmed Compatibility with WordPress Version 4.9.
 
 == Changelog ==
+
+= 1.0.4 =
+* Confirmed Compatibility with WordPress Version 4.9
+: April 26, 2018
 
 = 1.0.3 =
 * Modified README.txt for Readability
